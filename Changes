@@ -1,0 +1,6 @@
+{{$NEXT}}
+  - add Moo::Role LibreCat::Auth::SSO
+  - add implementing package LibreCat::Auth::SSO::CAS
+  - add implementing package LibreCat::Auth::SSO::ORCID
+  - add tests
+  - setup milla
