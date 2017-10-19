@@ -7,6 +7,9 @@ use Plack::Request;
 use Plack::Session;
 use URI;
 use LWP::UserAgent;
+use WWW::ORCID;
+use JSON;
+use LibreCat::Auth::ResponseParser::ORCID;
 use namespace::clean;
 
 our $VERSION = "0.01";
@@ -27,15 +30,41 @@ has client_secret => (
     isa => sub { check_string($_[0]); },
     required => 1
 );
-has lwp => (
+has orcid => (
+    is => "ro",
+    lazy => 1,
+    builder => "_build_orcid",
+    init_arg => undef
+);
+has json => (
     is      => "ro",
     lazy    => 1,
-    default => sub { LWP::UserAgent->new( cookie_jar => {} ); },
+    default => sub { JSON->new()->utf8(1); },
+    init_arg => undef
+);
+has response_parser => (
+    is => "ro",
+    lazy => 1,
+    builder => "_build_response_parser",
     init_arg => undef
 );
 
-my $base_url         = "https://orcid.org";
-my $sandbox_base_url = "https://sandbox.orcid.org";
+sub _build_orcid {
+
+    my $self = $_[0];
+
+    WWW::ORCID->new(
+        client_id => $self->client_id(),
+        client_secret => $self->client_secret(),
+        sandbox => $self->sandbox(),
+        public => 1,
+        transport => "LWP"
+    );
+
+}
+sub _build_response_parser {
+    LibreCat::Auth::ResponseParser::ORCID->new();
+}
 
 sub to_app {
     my $self = $_[0];
@@ -54,7 +83,7 @@ sub to_app {
         if ( is_hash_ref($auth_sso) ) {
 
             return [
-                302, [Location => $self->uri_for($self->authorization_path)],
+                302, [ Location => $self->uri_for($self->authorization_path) ],
                 []
             ];
 
@@ -71,37 +100,37 @@ sub to_app {
             if ( is_string($error) ) {
 
                 return [
-                    500, ["Content-Type" => "text/html"],
-                    [$error_description]
+                    500, [ "Content-Type" => "text/html" ],
+                    [ $error_description ]
                 ];
 
             }
 
-            my $token_url = ($self->sandbox ? $sandbox_base_url : $base_url) . "/oauth/token";
-
-            my $res = $self->lwp->post(
-                $token_url,
-                [
-                    client_id     => $self->client_id,
-                    client_secret => $self->client_secret,
-                    grant_type    => "authorization_code",
-                    code          => $params->get("code")
-                ],
-                "Accept" => "application/json"
+            #access_token returns either a hash (from ORCID), or undef
+            my $res = $self->orcid()->access_token(
+                grant_type => "authorization_code",
+                code => $params->get("code")
             );
 
-            unless ( $res->is_success() ) {
+            #error is always a PSGI Response
+            unless ( $res ) {
 
-                return [ 500, ["Content-Type" => "text/html"], [$res->content] ];
+                return $self->orcid()->last_error();
 
             }
 
             $self->set_auth_sso(
                 $session,
                 {
+                    %{
+                        $self->response_parser()->parse( $res )
+                    },
                     package    => __PACKAGE__,
                     package_id => $self->id,
-                    response   => $res->content
+                    response   => {
+                        content => $self->json()->encode( $res ),
+                        content_type => "application/json"
+                    }
                 }
             );
 
@@ -117,18 +146,14 @@ sub to_app {
             my $redirect_uri = URI->new( $self->uri_for($request->script_name) );
             $redirect_uri->query_form({ _callback => "true" });
 
-            my $auth_url = URI->new( ($self->sandbox ? $sandbox_base_url : $base_url) . "/oauth/authorize" );
-            $auth_url->query_form(
-                {
-                    show_login    => "true",
-                    client_id     => $self->client_id,
-                    scope         => "/authenticate",
-                    response_type => "code",
-                    redirect_uri  => $redirect_uri,
-                }
+            my $auth_uri = $self->orcid()->authorize_url(
+                show_login => "true",
+                scope => "/authenticate",
+                response_type => "code",
+                redirect_uri => $redirect_uri->as_string()
             );
 
-            [ 302, [ Location => $auth_url->as_string() ], [] ];
+            [ 302, [ Location => $auth_uri ], [] ];
 
         }
     };

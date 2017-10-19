@@ -994,6 +994,14 @@ DISTRIBUTIONS
       Symbol 0
       strict 0
       warnings 0
+  JSON-2.94
+    pathname: I/IS/ISHIGAKI/JSON-2.94.tar.gz
+    provides:
+      JSON 2.94
+      JSON::Backend::PP 2.94
+    requirements:
+      ExtUtils::MakeMaker 0
+      Test::More 0
   JSON-MaybeXS-1.003009
     pathname: E/ET/ETHER/JSON-MaybeXS-1.003009.tar.gz
     provides:
@@ -2070,6 +2078,29 @@ DISTRIBUTIONS
       ExtUtils::CBuilder 0
       Module::Build 0.4005
       perl 5.008001
+  WWW-ORCID-0.0401
+    pathname: N/NI/NICS/WWW-ORCID-0.0401.tar.gz
+    provides:
+      WWW::ORCID 0.0401
+      WWW::ORCID::API 0.0401
+      WWW::ORCID::API::v2_0 0.0401
+      WWW::ORCID::API::v2_0_public 0.0401
+      WWW::ORCID::Base 0.0401
+      WWW::ORCID::MemberAPI 0.0401
+      WWW::ORCID::Transport 0.0401
+      WWW::ORCID::Transport::HTTP::Tiny 0.0401
+      WWW::ORCID::Transport::LWP 0.0401
+    requirements:
+      Class::Load 0
+      HTTP::Tiny 0
+      JSON 2.51
+      LWP::UserAgent 0
+      Log::Any 0
+      Module::Build 0.28
+      Moo 1.000008
+      Sub::Quote 0
+      URI 0
+      namespace::clean 0
   WWW-RobotRules-6.02
     pathname: G/GA/GAAS/WWW-RobotRules-6.02.tar.gz
     provides:

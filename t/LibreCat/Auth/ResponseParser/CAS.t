@@ -32,12 +32,14 @@ EOF
 is_deeply(
     $pkg->new()->parse( $xml ),
     +{
-        user => "username",
-        firstname => "John",
-        lastname => "Doe",
-        title => "Mr.",
-        email => "jdoe\@example.org",
-        affiliation => ["staff","faculty"]
+        uid => "username",
+        info => {
+            firstname => "John",
+            lastname => "Doe",
+            title => "Mr.",
+            email => "jdoe\@example.org",
+            affiliation => ["staff","faculty"]
+        }
     },
     "cas:serviceResponse"
 );

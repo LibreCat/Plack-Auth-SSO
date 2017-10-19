@@ -18,13 +18,6 @@ has cas_url => (
     isa => sub { check_string($_[0]); },
     required => 1
 );
-has uid_field => (
-    is => "ro",
-    isa => sub { check_string($_[0]); },
-    required => 1,
-    lazy => 1,
-    default => sub { "user" }
-);
 has cas => (
     is => "ro",
     lazy => 1,
@@ -86,17 +79,19 @@ sub to_app {
             if ($r->is_success) {
 
                 my $doc = $r->doc();
-                my $attributes = $self->response_parser()->parse( $doc );
-                my $uid = delete $attributes->{ $self->uid_field() };
 
                 $self->set_auth_sso(
                     $session,
                     {
+                        %{
+                            $self->response_parser()->parse( $doc )
+                        },
                         package    => __PACKAGE__,
                         package_id => $self->id,
-                        response   => $doc->toString(),
-                        uid => $uid,
-                        info => $attributes
+                        response   => {
+                            content => $doc->toString(),
+                            content_type => "text/xml"
+                        }
                     }
                 );
 

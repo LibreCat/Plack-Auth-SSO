@@ -10,3 +10,4 @@ requires 'Authen::CAS::Client';
 requires 'Plack';
 requires 'URI';
 requires 'LWP::UserAgent';
+requires 'WWW::ORCID';
