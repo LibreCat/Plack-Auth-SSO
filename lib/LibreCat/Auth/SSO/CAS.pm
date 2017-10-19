@@ -6,6 +6,7 @@ use Authen::CAS::Client;
 use Moo;
 use Plack::Request;
 use Plack::Session;
+use LibreCat::Auth::ResponseParser::CAS;
 use namespace::clean;
 
 our $VERSION = "0.01";
@@ -17,10 +18,23 @@ has cas_url => (
     isa => sub { check_string($_[0]); },
     required => 1
 );
+has uid_field => (
+    is => "ro",
+    isa => sub { check_string($_[0]); },
+    required => 1,
+    lazy => 1,
+    default => sub { "user" }
+);
 has cas => (
     is => "ro",
     lazy => 1,
     builder => "_build_cas",
+    init_arg => undef
+);
+has response_parser => (
+    is => "ro",
+    lazy => 1,
+    builder => "_build_response_parser",
     init_arg => undef
 );
 
@@ -31,6 +45,9 @@ sub _build_cas {
     local $ENV{SSL_VERIFY_NONE}              = 1;
     local $ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;
     Authen::CAS::Client->new($self->cas_url());
+}
+sub _build_response_parser {
+    LibreCat::Auth::ResponseParser::CAS->new();
 }
 
 sub to_app {
@@ -69,14 +86,17 @@ sub to_app {
             if ($r->is_success) {
 
                 my $doc = $r->doc();
-                $doc = $doc->toString();
+                my $attributes = $self->response_parser()->parse( $doc );
+                my $uid = delete $attributes->{ $self->uid_field() };
 
                 $self->set_auth_sso(
                     $session,
                     {
                         package    => __PACKAGE__,
                         package_id => $self->id,
-                        response   => $doc
+                        response   => $doc->toString(),
+                        uid => $uid,
+                        info => $attributes
                     }
                 );
 

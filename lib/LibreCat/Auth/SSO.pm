@@ -26,7 +26,8 @@ has authorization_path => (
 );
 has id => (
     is => "ro",
-    lazy => 1
+    lazy => 1,
+    builder => "_build_id"
 );
 has uri_base => (
     is       => "ro",
