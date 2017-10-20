@@ -6,7 +6,7 @@ use Authen::CAS::Client;
 use Moo;
 use Plack::Request;
 use Plack::Session;
-use LibreCat::Auth::ResponseParser::CAS;
+use LibreCat::Auth::SSO::ResponseParser::CAS;
 use namespace::clean;
 
 our $VERSION = "0.01";
@@ -40,7 +40,7 @@ sub _build_cas {
     Authen::CAS::Client->new($self->cas_url());
 }
 sub _build_response_parser {
-    LibreCat::Auth::ResponseParser::CAS->new();
+    LibreCat::Auth::SSO::ResponseParser::CAS->new();
 }
 
 sub to_app {

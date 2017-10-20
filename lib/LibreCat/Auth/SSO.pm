@@ -171,6 +171,8 @@ url (see below).
 The authorization route must pick up the response from the session,
 and log the user in.
 
+This package requires you to use Plack Sessions.
+
 =head1 CONFIG
 
 =over 4
@@ -178,21 +180,41 @@ and log the user in.
 =item session_key
 
 When authentication succeeds, the implementation saves the response
-from the SSO application in this session key.
+from the SSO application in this session key, together with extra information.
 
 The response should look like this:
 
     {
         package => "<package-name>",
         package_id => "<package-id>",
-        response => "Long response from external SSO application like CAS"
+        response => {
+            content => "Long response from external SSO application like CAS",
+            content_type => "<mime-type>"
+        },
+        uid => "<uid-in-external-app>",
+        info => {
+            attr1 => "attr1",
+            attr2 => "attr2"
+        }
     }
 
-This is usefull for two reasons:
+This is usefull for several reasons:
 
-    * this application can distinguish between authenticated and not authenticated users
+    * the authorization application can distinguish between authenticated and not authenticated users
 
-    * the authorization application can pick up the saved response from the session
+    * it can pick up the saved response from the session
+
+    * it can lookup a user in an internal database, matching on the provided "uid" from the external service.
+
+    * the key "package" tells which package authenticated the user; so the application can do an appropriate lookup based on this information.
+
+    * the key "package_id" defaults to the package name, but is configurable. This is usefull when you have several external services of the same type,
+      and your application wants to distinguish between them.
+
+    * the original response is stored as text, along with the content type.
+
+    * extra attributes stored in the hash reference "info". It is up to the implementing package whether it should only used attributes as pushed during
+      the authentication step (like in CAS), or do an extra lookup.
 
 =item authorization_path
 
@@ -210,6 +232,8 @@ method that prepends your path with "uri_base".
 identifier of the authentication module. Defaults to the package name.
 This is handy when using multiple SSO instances, and you need to known
 exactly which package authenticated the user.
+
+This is stored in "auth_sso" as "package_id".
 
 =item uri_base
 
@@ -235,12 +259,29 @@ save SSO response to your session
 
 $hash should be a hash ref, and look like this:
 
-
     {
         package => __PACKAGE__,
         package_id => __PACKAGE__ ,
-        response => "Long response from external SSO application like CAS"
+        response => {
+            content => "Long response from external SSO application like CAS",
+            content_type => "<mime-type>",
+        },
+        uid => "<uid>",
+        info => {}
     }
+
+=head1 EXAMPLES
+
+See examples/app1:
+
+    #copy example config to required location
+    $ cp examples/catmandu.yml.example examples/catmandu.yml
+
+    #edit config
+    $ vim examples/catmandu.yml
+
+    #start plack application
+    plackup examples/app1.pl
 
 =head1 AUTHOR
 

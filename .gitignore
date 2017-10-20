@@ -14,3 +14,4 @@ _build_params
 nytprof.out
 nytprof/
 local/
+examples/catmandu.yml

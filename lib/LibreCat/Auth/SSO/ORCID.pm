@@ -9,7 +9,7 @@ use URI;
 use LWP::UserAgent;
 use WWW::ORCID;
 use JSON;
-use LibreCat::Auth::ResponseParser::ORCID;
+use LibreCat::Auth::SSO::ResponseParser::ORCID;
 use namespace::clean;
 
 our $VERSION = "0.01";
@@ -63,7 +63,7 @@ sub _build_orcid {
 
 }
 sub _build_response_parser {
-    LibreCat::Auth::ResponseParser::ORCID->new();
+    LibreCat::Auth::SSO::ResponseParser::ORCID->new();
 }
 
 sub to_app {
