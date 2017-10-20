@@ -4,3 +4,6 @@
   - add implementing package LibreCat::Auth::SSO::ORCID
   - add tests
   - setup milla
+  - use WWW::ORCID
+  - add documentation
+  - add example Plack application to directory examples
