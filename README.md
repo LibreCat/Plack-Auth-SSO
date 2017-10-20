@@ -42,7 +42,15 @@ LibreCat::Auth::SSO - LibreCat role for Single Sign On (SSO) authentication
                 {
                     package => __PACKAGE__,
                     package_id => $self->id,
-                    response => "Long response from external SSO application"
+                    response => {
+                        content => "Long response from external SSO application",
+                        content_type => "text/xml"
+                    },
+                    uid => "<uid>",
+                    info => {
+                        attr1 => "attr1",
+                        attr2 => "attr2"
+                    }
                 }
             );
 
