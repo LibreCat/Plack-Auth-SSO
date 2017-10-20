@@ -31,6 +31,7 @@ my %module_build_args = (
     "Moo::Role" => 0,
     "Plack" => 0,
     "URI" => 0,
+    "WWW::ORCID" => 0,
     "namespace::clean" => 0,
     "perl" => "v5.10.1"
   }
