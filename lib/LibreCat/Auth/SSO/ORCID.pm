@@ -173,9 +173,7 @@ LibreCat::Auth::SSO::ORCID - implementation of LibreCat::Auth::SSO for ORCID
 
     builder {
 
-
         #Register THIS URI in ORCID as a new redirect_uri
-
         mount "/auth/orcid" => LibreCat::Auth::SSO::ORCID->new(
             client_id => "APP-1",
             client_secret => "mypassword",
@@ -185,7 +183,6 @@ LibreCat::Auth::SSO::ORCID - implementation of LibreCat::Auth::SSO for ORCID
         )->to_app;
 
         #DO NOT register this uri as new redirect_uri in ORCID
-
         mount "/auth/orcid/callback" => sub {
 
             my $env = shift;
@@ -202,17 +199,17 @@ LibreCat::Auth::SSO::ORCID - implementation of LibreCat::Auth::SSO for ORCID
             #process auth_sso (white list, roles ..)
 
             #auth_sso is a hash reference:
-            #{ type => "ORCID", response => "<response-from-orcid>" }
-            #the response from orcid is in this case a json string containing the following data:
-            #
             #{
-            #    "orcid" => "<orcid>",
-            #    "access_token" => "<access_token>",
-            #    "refresh_token" => "<refresh-token>",
-            #    "name" => "<name>",
-            #    "scope" => "/orcid-profile/read-limited",
-            #    "token_type" => "bearer",
-            #    "expires_in" => "<expiration-date>"
+            #    package => "LibreCat::Auth::SSO::ORCID",
+            #    package_id => "LibreCat::Auth::SSO::ORCID",
+            #    response => {
+            #        content_type => "application/json",
+            #        content => ""{\"orcid\":\"0000-0002-5268-9669\",\"token_type\":\"bearer\",\"name\":\"Nicolas Franck\",\"refresh_token\":\"222222222222\",\"access_token\":\"111111111111\",\"scope\":\"/authenticate\",\"expires_in\":631138518}
+            #    },
+            #    uid => "0000-0002-5268-9669",
+            #    info => {
+            #        name => "Nicolas Franck"
+            #    }
             #}
 
             #you can reuse the "orcid" and "access_token" to get the user profile
