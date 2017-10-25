@@ -70,6 +70,7 @@ sub from_doc {
     }
 
     +{
+        extra => {},
         info => \%attributes,
         uid => $libxml->findvalue( "/cas:serviceResponse/cas:authenticationSuccess/cas:user", $xpath )
     };

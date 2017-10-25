@@ -582,6 +582,25 @@ DISTRIBUTIONS
     requirements:
       Devel::StackTrace 0
       ExtUtils::MakeMaker 0
+  Digest-HMAC-1.03
+    pathname: G/GA/GAAS/Digest-HMAC-1.03.tar.gz
+    provides:
+      Digest::HMAC 1.03
+      Digest::HMAC_MD5 1.01
+      Digest::HMAC_SHA1 1.03
+    requirements:
+      Digest::MD5 2
+      Digest::SHA 1
+      ExtUtils::MakeMaker 0
+      perl 5.004
+  Digest-SHA1-2.13
+    pathname: G/GA/GAAS/Digest-SHA1-2.13.tar.gz
+    provides:
+      Digest::SHA1 2.13
+    requirements:
+      Digest::base 1.00
+      ExtUtils::MakeMaker 0
+      perl 5.004
   Dispatch-Class-0.02
     pathname: M/MA/MAUKE/Dispatch-Class-0.02.tar.gz
     provides:
@@ -1534,6 +1553,26 @@ DISTRIBUTIONS
       WWW::Form::UrlEncoded 0.23
       parent 0
       perl 5.008001
+  Plack-Middleware-Session-0.30
+    pathname: M/MI/MIYAGAWA/Plack-Middleware-Session-0.30.tar.gz
+    provides:
+      Plack::Middleware::Session 0.30
+      Plack::Middleware::Session::Cookie undef
+      Plack::Session 0.30
+      Plack::Session::Cleanup 0.30
+      Plack::Session::State 0.30
+      Plack::Session::State::Cookie 0.30
+      Plack::Session::Store 0.30
+      Plack::Session::Store::Cache 0.30
+      Plack::Session::Store::DBI 0.30
+      Plack::Session::Store::File 0.30
+      Plack::Session::Store::Null 0.30
+    requirements:
+      Cookie::Baker 0
+      Digest::HMAC_SHA1 1.03
+      Digest::SHA1 0
+      Module::Build::Tiny 0.039
+      Plack 0.9910
   Role-Tiny-2.000005
     pathname: H/HA/HAARG/Role-Tiny-2.000005.tar.gz
     provides:

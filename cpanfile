@@ -8,6 +8,8 @@ requires 'namespace::clean';
 requires 'Carp';
 requires 'Authen::CAS::Client';
 requires 'Plack';
+requires 'Plack::Middleware::Session';
 requires 'URI';
 requires 'LWP::UserAgent';
 requires 'WWW::ORCID';
+requires 'Clone';

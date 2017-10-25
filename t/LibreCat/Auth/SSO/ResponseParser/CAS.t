@@ -39,7 +39,8 @@ is_deeply(
             title => "Mr.",
             email => "jdoe\@example.org",
             affiliation => ["staff","faculty"]
-        }
+        },
+        extra => {}
     },
     "cas:serviceResponse"
 );

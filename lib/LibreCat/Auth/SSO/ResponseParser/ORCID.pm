@@ -4,6 +4,7 @@ use Catmandu::Sane;
 use Catmandu::Util qw(is_string);
 use JSON;
 use Moo;
+use Clone qw();
 use namespace::clean;
 
 our $VERSION = "0.01";
@@ -25,13 +26,26 @@ sub parse {
 
     my ( $self, $obj ) = @_;
 
-    $obj = $self->json()->decode( $obj ) if is_string($obj);
+    if ( is_string( $obj ) ) {
+
+        $obj = $self->json()->decode( $obj );
+
+    }
+    else {
+
+        $obj = Clone::clone( $obj );
+
+    }
+
+    my $uid  = delete $obj->{orcid};
+    my $name = delete $obj->{name};
 
     +{
-        uid => $obj->{orcid},
+        uid => $uid,
         info => {
-            name => $obj->{name}
-        }
+            name => $name
+        },
+        extra => $obj
     };
 
 }
