@@ -207,6 +207,45 @@ Fields to be extracted from the environment/headers
 
 =back
 
+=head1 auth_sso output
+
+
+{
+
+    package => "LibreCat::Auth::SSO::Shibboleth",
+
+    package_id => "LibreCat::Auth::SSO::Shibboleth",
+
+    #configured by "uid_field"
+    uid => "<unique-identifier>",
+
+    #configured by "info_fields". Empty otherwise
+    info => {
+        attr1 => "attr1",
+        attr2 => "attr2"
+    },
+
+    #Shibboleth headers/environment variables
+    extra => {
+        "Shib-Session-Id" => "..",
+        "Shib-Application-Id" => "..",
+        "Shib-Identity-Provider" => "https://path.to/shibboleth./idp",
+        "Shib-Authentication-Instant" => "",
+        "Shib-Authentication-Method" => "POST",
+        "Shib-AuthnContext-Class" => "..",
+        "Shib-AuthnContext-Decl" => "..",
+        "Shib-Handler" => "..",
+        "Shib-Session-Index" => ".."
+        "Shib-Cookie-Name" => ".."
+    },
+
+    #We cannot access the original SAML response, so we rely on the headers/environment
+    response => {
+        content_type => "application/json",
+        content => "<headers/environment serialized as json>"
+    }
+}
+
 =head1 GLOBAL SETUP
 
 This module does not do what it claims to do: authenticating the user by communicating with an external service.
