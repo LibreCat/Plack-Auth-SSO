@@ -50,6 +50,9 @@ LibreCat::Auth::SSO - LibreCat role for Single Sign On (SSO) authentication
                     info => {
                         attr1 => "attr1",
                         attr2 => "attr2"
+                    },
+                    extra => {
+                        field1 => "field1"
                     }
                 }
             );
@@ -131,6 +134,9 @@ This package requires you to use Plack Sessions.
             info => {
                 attr1 => "attr1",
                 attr2 => "attr2"
+            },
+            extra => {
+                field1 => "field1"
             }
         }
 
@@ -149,8 +155,12 @@ This package requires you to use Plack Sessions.
 
         * the original response is stored as text, along with the content type.
 
-        * extra attributes stored in the hash reference "info". It is up to the implementing package whether it should only used attributes as pushed during
+        * other attributes stored in the hash reference "info". It is up to the implementing package whether it should only used attributes as pushed during
           the authentication step (like in CAS), or do an extra lookup.
+
+        * "extra" should be used to store request information.
+            e.g. "ORCID" gives a "token".
+            e.g. "Shibboleth" supplies the "Shib-Identity-Provider".
 
 - authorization\_path
 
@@ -201,7 +211,8 @@ $hash should be a hash ref, and look like this:
             content_type => "<mime-type>",
         },
         uid => "<uid>",
-        info => {}
+        info => {},
+        extra => {}
     }
 
 # EXAMPLES
@@ -233,3 +244,4 @@ See [http://dev.perl.org/licenses/](http://dev.perl.org/licenses/) for more info
 
 [LibreCat::Auth::SSO::CAS](https://metacpan.org/pod/LibreCat::Auth::SSO::CAS),
 [LibreCat::Auth::SSO::ORCID](https://metacpan.org/pod/LibreCat::Auth::SSO::ORCID)
+[LibreCat::Auth::SSO::Shibboleth](https://metacpan.org/pod/LibreCat::Auth::SSO::Shibboleth)
