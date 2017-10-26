@@ -120,6 +120,9 @@ LibreCat::Auth::SSO - LibreCat role for Single Sign On (SSO) authentication
                     info => {
                         attr1 => "attr1",
                         attr2 => "attr2"
+                    },
+                    extra => {
+                        field1 => "field1"
                     }
                 }
             );
@@ -203,6 +206,9 @@ The response should look like this:
         info => {
             attr1 => "attr1",
             attr2 => "attr2"
+        },
+        extra => {
+            field1 => "field1"
         }
     }
 
@@ -221,8 +227,12 @@ This is usefull for several reasons:
 
     * the original response is stored as text, along with the content type.
 
-    * extra attributes stored in the hash reference "info". It is up to the implementing package whether it should only used attributes as pushed during
+    * other attributes stored in the hash reference "info". It is up to the implementing package whether it should only used attributes as pushed during
       the authentication step (like in CAS), or do an extra lookup.
+
+    * "extra" should be used to store request information.
+        e.g. "ORCID" gives a "token".
+        e.g. "Shibboleth" supplies the "Shib-Identity-Provider".
 
 =item authorization_path
 
@@ -275,7 +285,8 @@ $hash should be a hash ref, and look like this:
             content_type => "<mime-type>",
         },
         uid => "<uid>",
-        info => {}
+        info => {},
+        extra => {}
     }
 
 =head1 EXAMPLES
@@ -307,5 +318,6 @@ See L<http://dev.perl.org/licenses/> for more information.
 
 L<LibreCat::Auth::SSO::CAS>,
 L<LibreCat::Auth::SSO::ORCID>
+L<LibreCat::Auth::SSO::Shibboleth>
 
 =cut

@@ -209,7 +209,8 @@ LibreCat::Auth::SSO::ORCID - implementation of LibreCat::Auth::SSO for ORCID
             #    uid => "0000-0002-5268-9669",
             #    info => {
             #        name => "Nicolas Franck"
-            #    }
+            #    },
+            #    extra => {}
             #}
 
             #you can reuse the "orcid" and "access_token" to get the user profile
