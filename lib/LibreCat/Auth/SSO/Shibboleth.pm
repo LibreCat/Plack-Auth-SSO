@@ -55,6 +55,8 @@ my @other_shib_fields = qw(
     Shib-AuthnContext-Class
     Shib-AuthnContext-Decl
     Shib-Handler
+    Shib-Session-Index
+    Shib-Cookie-Name
 );
 
 sub request_param {
@@ -123,7 +125,7 @@ sub to_app {
 
         my $content = +{};
         for my $header ( keys %$env ) {
-            next if index( $header, "psgi." ) == 0;
+            next if index( $header, "psgi" ) == 0;
             $content->{$header} = $env->{$header};
         }
 
