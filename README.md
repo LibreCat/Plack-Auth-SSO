@@ -1,14 +1,14 @@
 # NAME
 
-LibreCat::Auth::SSO - role for Single Sign On (SSO) authentication
+Plack::Auth::SSO - role for Single Sign On (SSO) authentication
 
 # IMPLEMENTATIONS
 
-\* SSO for Central Authentication System (CAS): [LibreCat::Auth::SSO::CAS](https://metacpan.org/pod/LibreCat::Auth::SSO::CAS)
+\* SSO for Central Authentication System (CAS): [Plack::Auth::SSO::CAS](https://metacpan.org/pod/Plack::Auth::SSO::CAS)
 
-\* SSO for ORCID: [LibreCat::Auth::SSO::ORCID](https://metacpan.org/pod/LibreCat::Auth::SSO::ORCID)
+\* SSO for ORCID: [Plack::Auth::SSO::ORCID](https://metacpan.org/pod/Plack::Auth::SSO::ORCID)
 
-\* SSO for Shibboleth: [LibreCat::Auth::SSO::Shibboleth](https://metacpan.org/pod/LibreCat::Auth::SSO::Shibboleth)
+\* SSO for Shibboleth: [Plack::Auth::SSO::Shibboleth](https://metacpan.org/pod/Plack::Auth::SSO::Shibboleth)
 
 # SYNOPSIS
 
@@ -17,7 +17,7 @@ LibreCat::Auth::SSO - role for Single Sign On (SSO) authentication
     use Moo;
     use Catmandu::Util qw(:is);
 
-    with "LibreCat::Auth::SSO";
+    with "Plack::Auth::SSO";
 
     sub to_app {
 
@@ -30,7 +30,7 @@ LibreCat::Auth::SSO - role for Single Sign On (SSO) authentication
             my $session = Plack::Session->new($env);
 
             #did this app already authenticate you?
-            #implementation of LibreCat::Auth::SSO should write hash to session key,
+            #implementation of Plack::Auth::SSO should write hash to session key,
             #configured by "session_key"
             my $auth_sso = $self->get_auth_sso($session);
 
@@ -236,14 +236,6 @@ See examples/app1:
     #start plack application
     plackup examples/app1.pl
 
-# QUESTIONS
-
-\* Is this part of LibreCat project ([https://github.com/LibreCat/LibreCat](https://github.com/LibreCat/LibreCat))? Do I need LibreCat too?
-
-No. There is no requirement for LibreCat.
-
-I just needed a namespace, and Plack::Auth::SSO seemed too greedy.
-
 # AUTHOR
 
 Nicolas Franck, `<nicolas.franck at ugent.be>`
@@ -258,6 +250,6 @@ See [http://dev.perl.org/licenses/](http://dev.perl.org/licenses/) for more info
 
 # SEE ALSO
 
-[LibreCat::Auth::SSO::CAS](https://metacpan.org/pod/LibreCat::Auth::SSO::CAS),
-[LibreCat::Auth::SSO::ORCID](https://metacpan.org/pod/LibreCat::Auth::SSO::ORCID)
-[LibreCat::Auth::SSO::Shibboleth](https://metacpan.org/pod/LibreCat::Auth::SSO::Shibboleth)
+[Plack::Auth::SSO::CAS](https://metacpan.org/pod/Plack::Auth::SSO::CAS),
+[Plack::Auth::SSO::ORCID](https://metacpan.org/pod/Plack::Auth::SSO::ORCID)
+[Plack::Auth::SSO::Shibboleth](https://metacpan.org/pod/Plack::Auth::SSO::Shibboleth)

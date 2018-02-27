@@ -9,7 +9,7 @@ Makefile.PL
 META.*
 MYMETA.*
 test/
-LibreCat-Auth-SSO-*
+Plack-Auth-SSO-*
 _build_params
 nytprof.out
 nytprof/

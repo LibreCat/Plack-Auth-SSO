@@ -17,10 +17,10 @@ my %module_build_args = (
   "dist_author" => [
     "Nicolas Franck, C<< <nicolas.franck at ugent.be> >>"
   ],
-  "dist_name" => "LibreCat-Auth-SSO",
+  "dist_name" => "Plack-Auth-SSO",
   "dist_version" => "0.01",
   "license" => "perl",
-  "module_name" => "LibreCat::Auth::SSO",
+  "module_name" => "Plack::Auth::SSO",
   "recursive_test_files" => 1,
   "requires" => {
     "Authen::CAS::Client" => 0,
