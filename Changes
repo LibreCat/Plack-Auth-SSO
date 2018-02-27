@@ -1,4 +1,5 @@
 {{$NEXT}}
+  - Renamed to Plack::Auth::SSO
 
 0.01  2018-02-27 13:26:30 CET
   - add Moo::Role LibreCat::Auth::SSO
