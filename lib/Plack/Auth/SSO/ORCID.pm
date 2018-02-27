@@ -1,4 +1,4 @@
-package LibreCat::Auth::SSO::ORCID;
+package Plack::Auth::SSO::ORCID;
 
 use Catmandu::Sane;
 use Catmandu::Util qw(:check :is);
@@ -9,12 +9,12 @@ use URI;
 use LWP::UserAgent;
 use WWW::ORCID;
 use JSON;
-use LibreCat::Auth::SSO::ResponseParser::ORCID;
+use Plack::Auth::SSO::ResponseParser::ORCID;
 use namespace::clean;
 
 our $VERSION = "0.01";
 
-with "LibreCat::Auth::SSO";
+with "Plack::Auth::SSO";
 
 has sandbox => (
     is => "ro",
@@ -63,7 +63,7 @@ sub _build_orcid {
 
 }
 sub _build_response_parser {
-    LibreCat::Auth::SSO::ResponseParser::ORCID->new();
+    Plack::Auth::SSO::ResponseParser::ORCID->new();
 }
 
 sub to_app {
@@ -165,7 +165,7 @@ sub to_app {
 
 =head1 NAME
 
-LibreCat::Auth::SSO::ORCID - implementation of LibreCat::Auth::SSO for ORCID
+Plack::Auth::SSO::ORCID - implementation of Plack::Auth::SSO for ORCID
 
 =head1 SYNOPSIS
 
@@ -174,7 +174,7 @@ LibreCat::Auth::SSO::ORCID - implementation of LibreCat::Auth::SSO for ORCID
     builder {
 
         #Register THIS URI in ORCID as a new redirect_uri
-        mount "/auth/orcid" => LibreCat::Auth::SSO::ORCID->new(
+        mount "/auth/orcid" => Plack::Auth::SSO::ORCID->new(
             client_id => "APP-1",
             client_secret => "mypassword",
             sandbox => 1,
@@ -200,8 +200,8 @@ LibreCat::Auth::SSO::ORCID - implementation of LibreCat::Auth::SSO for ORCID
 
             #auth_sso is a hash reference:
             #{
-            #    package => "LibreCat::Auth::SSO::ORCID",
-            #    package_id => "LibreCat::Auth::SSO::ORCID",
+            #    package => "Plack::Auth::SSO::ORCID",
+            #    package_id => "Plack::Auth::SSO::ORCID",
             #    response => {
             #        content_type => "application/json",
             #        content => ""{\"orcid\":\"0000-0002-5268-9669\",\"token_type\":\"bearer\",\"name\":\"Nicolas Franck\",\"refresh_token\":\"222222222222\",\"access_token\":\"111111111111\",\"scope\":\"/authenticate\",\"expires_in\":631138518}
@@ -224,7 +224,7 @@ LibreCat::Auth::SSO::ORCID - implementation of LibreCat::Auth::SSO for ORCID
 
 =head1 DESCRIPTION
 
-This is an implementation of L<LibreCat::Auth::SSO> to authenticate against a ORCID (OAuth) server.
+This is an implementation of L<Plack::Auth::SSO> to authenticate against a ORCID (OAuth) server.
 
 It inherits all configuration options from its parent.
 
@@ -256,6 +256,6 @@ Nicolas Franck, C<< <nicolas.franck at ugent.be> >>
 
 =head1 SEE ALSO
 
-L<LibreCat::Auth::SSO>
+L<Plack::Auth::SSO>
 
 =cut

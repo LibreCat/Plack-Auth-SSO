@@ -1,4 +1,4 @@
-package LibreCat::Auth::SSO::CAS;
+package Plack::Auth::SSO::CAS;
 
 use Catmandu::Sane;
 use Catmandu::Util qw(:check :is);
@@ -6,12 +6,12 @@ use Authen::CAS::Client;
 use Moo;
 use Plack::Request;
 use Plack::Session;
-use LibreCat::Auth::SSO::ResponseParser::CAS;
+use Plack::Auth::SSO::ResponseParser::CAS;
 use namespace::clean;
 
 our $VERSION = "0.01";
 
-with "LibreCat::Auth::SSO";
+with "Plack::Auth::SSO";
 
 has cas_url => (
     is => "ro",
@@ -40,7 +40,7 @@ sub _build_cas {
     Authen::CAS::Client->new($self->cas_url());
 }
 sub _build_response_parser {
-    LibreCat::Auth::SSO::ResponseParser::CAS->new();
+    Plack::Auth::SSO::ResponseParser::CAS->new();
 }
 
 sub to_app {
@@ -119,7 +119,7 @@ sub to_app {
 
 =head1 NAME
 
-LibreCat::Auth::SSO::CAS - implementation of LibreCat::Auth::SSO for CAS
+Plack::Auth::SSO::CAS - implementation of Plack::Auth::SSO for CAS
 
 =head1 SYNOPSIS
 
@@ -127,7 +127,7 @@ LibreCat::Auth::SSO::CAS - implementation of LibreCat::Auth::SSO for CAS
 
     builder {
 
-        mount "/auth/cas" => LibreCat::Auth::SSO::CAS->new(
+        mount "/auth/cas" => Plack::Auth::SSO::CAS->new(
 
             session_key => "auth_sso",
             uri_base => "http://localhost:5000",
@@ -159,7 +159,7 @@ LibreCat::Auth::SSO::CAS - implementation of LibreCat::Auth::SSO for CAS
 
 =head1 DESCRIPTION
 
-This is an implementation of L<LibreCat::Auth::SSO> to authenticate against a CAS server.
+This is an implementation of L<Plack::Auth::SSO> to authenticate against a CAS server.
 
 It inherits all configuration options from its parent.
 
@@ -186,6 +186,6 @@ Nicolas Franck, C<< <nicolas.franck at ugent.be> >>
 
 =head1 SEE ALSO
 
-L<LibreCat::Auth::SSO>
+L<Plack::Auth::SSO>
 
 =cut

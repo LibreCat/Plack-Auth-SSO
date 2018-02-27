@@ -6,7 +6,7 @@ use Test::Exception;
 my $pkg;
 
 BEGIN {
-    $pkg = "LibreCat::Auth::SSO::ResponseParser::ORCID";
+    $pkg = "Plack::Auth::SSO::ResponseParser::ORCID";
     use_ok $pkg;
 }
 require_ok $pkg;

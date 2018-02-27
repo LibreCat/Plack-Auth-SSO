@@ -1,4 +1,4 @@
-package LibreCat::Auth::SSO::ResponseParser::CAS;
+package Plack::Auth::SSO::ResponseParser::CAS;
 
 use Catmandu::Sane;
 use Catmandu::Util qw(:check :is);
@@ -9,7 +9,7 @@ use namespace::clean;
 
 our $VERSION = "0.01";
 
-with "LibreCat::Auth::SSO::ResponseParser";
+with "Plack::Auth::SSO::ResponseParser";
 
 has xpath => (
     is => "ro",

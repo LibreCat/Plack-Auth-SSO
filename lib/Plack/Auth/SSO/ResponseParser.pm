@@ -1,4 +1,4 @@
-package LibreCat::Auth::SSO::ResponseParser;
+package Plack::Auth::SSO::ResponseParser;
 
 use Catmandu::Sane;
 use Moo::Role;

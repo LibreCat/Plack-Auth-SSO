@@ -1,4 +1,4 @@
-package LibreCat::Auth::SSO;
+package Plack::Auth::SSO;
 
 use Catmandu::Sane;
 use Catmandu::Util qw(check_string);
@@ -49,7 +49,7 @@ sub _build_id {
 
 #check if $env->{psgix.session} is stored Plack::Session->session
 sub _check_plack_session {
-    defined($_[0]->session) or die("LibreCat::Auth::SSO requires a Plack::Session");
+    defined($_[0]->session) or die("Plack::Auth::SSO requires a Plack::Session");
 }
 
 sub get_auth_sso {
@@ -70,15 +70,15 @@ sub set_auth_sso {
 
 =head1 NAME
 
-LibreCat::Auth::SSO - role for Single Sign On (SSO) authentication
+Plack::Auth::SSO - role for Single Sign On (SSO) authentication
 
 =head1 IMPLEMENTATIONS
 
-* SSO for Central Authentication System (CAS): L<LibreCat::Auth::SSO::CAS>
+* SSO for Central Authentication System (CAS): L<Plack::Auth::SSO::CAS>
 
-* SSO for ORCID: L<LibreCat::Auth::SSO::ORCID>
+* SSO for ORCID: L<Plack::Auth::SSO::ORCID>
 
-* SSO for Shibboleth: L<LibreCat::Auth::SSO::Shibboleth>
+* SSO for Shibboleth: L<Plack::Auth::SSO::Shibboleth>
 
 =head1 SYNOPSIS
 
@@ -87,7 +87,7 @@ LibreCat::Auth::SSO - role for Single Sign On (SSO) authentication
     use Moo;
     use Catmandu::Util qw(:is);
 
-    with "LibreCat::Auth::SSO";
+    with "Plack::Auth::SSO";
 
     sub to_app {
 
@@ -100,7 +100,7 @@ LibreCat::Auth::SSO - role for Single Sign On (SSO) authentication
             my $session = Plack::Session->new($env);
 
             #did this app already authenticate you?
-            #implementation of LibreCat::Auth::SSO should write hash to session key,
+            #implementation of Plack::Auth::SSO should write hash to session key,
             #configured by "session_key"
             my $auth_sso = $self->get_auth_sso($session);
 
@@ -310,14 +310,6 @@ See examples/app1:
     #start plack application
     plackup examples/app1.pl
 
-=head1 QUESTIONS
-
-* Is this part of LibreCat project (L<https://github.com/LibreCat/LibreCat>)? Do I need LibreCat too?
-
-No. There is no requirement for LibreCat.
-
-I just needed a namespace, and Plack::Auth::SSO seemed too greedy.
-
 =head1 AUTHOR
 
 Nicolas Franck, C<< <nicolas.franck at ugent.be> >>
@@ -332,8 +324,8 @@ See L<http://dev.perl.org/licenses/> for more information.
 
 =head1 SEE ALSO
 
-L<LibreCat::Auth::SSO::CAS>,
-L<LibreCat::Auth::SSO::ORCID>
-L<LibreCat::Auth::SSO::Shibboleth>
+L<Plack::Auth::SSO::CAS>,
+L<Plack::Auth::SSO::ORCID>
+L<Plack::Auth::SSO::Shibboleth>
 
 =cut

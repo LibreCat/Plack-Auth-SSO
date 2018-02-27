@@ -1,4 +1,4 @@
-package LibreCat::Auth::SSO::ResponseParser::ORCID;
+package Plack::Auth::SSO::ResponseParser::ORCID;
 
 use Catmandu::Sane;
 use Catmandu::Util qw(is_string);
@@ -9,7 +9,7 @@ use namespace::clean;
 
 our $VERSION = "0.01";
 
-with "LibreCat::Auth::SSO::ResponseParser";
+with "Plack::Auth::SSO::ResponseParser";
 
 has json => (
     is => "ro",

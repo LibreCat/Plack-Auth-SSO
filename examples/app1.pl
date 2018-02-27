@@ -6,8 +6,8 @@ use Catmandu::Sane;
 use Catmandu::Util qw(:is);
 use Catmandu -load => [ $FindBin::Bin ];
 use Plack::Builder;
-use LibreCat::Auth::SSO::CAS;
-use LibreCat::Auth::SSO::ORCID;
+use Plack::Auth::SSO::CAS;
+use Plack::Auth::SSO::ORCID;
 use Catmandu;
 use JSON;
 
@@ -26,7 +26,7 @@ builder {
     enable "Session";
 
     #package that authenticates CAS users
-    mount "/auth/cas" => LibreCat::Auth::SSO::CAS->new(
+    mount "/auth/cas" => Plack::Auth::SSO::CAS->new(
 
         #see Catmandu->config->{cas}
         %{ $config->{cas} },
@@ -37,7 +37,7 @@ builder {
     )->to_app;
 
     #package that authenticates ORCID users
-    mount "/auth/orcid" => LibreCat::Auth::SSO::ORCID->new(
+    mount "/auth/orcid" => Plack::Auth::SSO::ORCID->new(
 
         #see Catmandu->config->{orcid}
         %{ $config->{orcid} },
@@ -82,12 +82,12 @@ builder {
 
         #process auth_sso (white list, roles ..)
         my $user;
-        if ( $auth_sso->{package} eq "LibreCat::Auth::SSO::CAS" ) {
+        if ( $auth_sso->{package} eq "Plack::Auth::SSO::CAS" ) {
 
             $user = $users->select( sso_cas => $auth_sso->{uid} )->first();
 
         }
-        elsif ( $auth_sso->{package} eq "LibreCat::Auth::SSO::ORCID" ) {
+        elsif ( $auth_sso->{package} eq "Plack::Auth::SSO::ORCID" ) {
 
             $user = $users->select( sso_orcid => $auth_sso->{uid} )->first();
 
@@ -146,7 +146,7 @@ builder {
 <!doctype html>
 <html>
     <head>
-        <title>LibreCat::Auth::SSO demo application</title>
+        <title>Plack::Auth::SSO demo application</title>
     </head>
     <body>
         <h2>Hello $user->{_id}!</h2>
@@ -187,7 +187,7 @@ EOF
 <!doctype html>
 <html>
     <head>
-        <title>LibreCat::Auth::SSO demo application</title>
+        <title>Plack::Auth::SSO demo application</title>
     </head>
     <body>
         <h2>Select a way to authenticate</h2>

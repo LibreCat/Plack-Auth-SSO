@@ -1,4 +1,4 @@
-package LibreCat::Auth::SSO::Shibboleth;
+package Plack::Auth::SSO::Shibboleth;
 
 use Catmandu::Sane;
 use Catmandu::Util qw(:check :is array_includes);
@@ -10,7 +10,7 @@ use namespace::clean;
 
 our $VERSION = "0.01";
 
-with "LibreCat::Auth::SSO";
+with "Plack::Auth::SSO";
 
 #cf. https://github.com/toyokazu/omniauth-shibboleth/blob/master/lib/omniauth/strategies/shibboleth.rb
 
@@ -161,13 +161,13 @@ sub to_app {
 
 =head1 NAME
 
-LibreCat::Auth::SSO::Shibboleth - implementation of LibreCat::Auth::SSO for Shibboleth
+Plack::Auth::SSO::Shibboleth - implementation of Plack::Auth::SSO for Shibboleth
 
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION
 
-This is an implementation of L<LibreCat::Auth::SSO> to authenticate behind a Shibboleth Service Provider (SP)
+This is an implementation of L<Plack::Auth::SSO> to authenticate behind a Shibboleth Service Provider (SP)
 
 It inherits all configuration options from its parent.
 
@@ -212,9 +212,9 @@ Fields to be extracted from the environment/headers
 
 {
 
-    package => "LibreCat::Auth::SSO::Shibboleth",
+    package => "Plack::Auth::SSO::Shibboleth",
 
-    package_id => "LibreCat::Auth::SSO::Shibboleth",
+    package_id => "Plack::Auth::SSO::Shibboleth",
 
     #configured by "uid_field"
     uid => "<unique-identifier>",
@@ -277,7 +277,7 @@ This module merely convert these attributes.
 
 use Catmandu::Sane;
 use Catmandu::Util qw(:is);
-use LibreCat::Auth::SSO::Shibboleth;
+use Plack::Auth::SSO::Shibboleth;
 use Plack::Builder;
 use Plack::Session;
 use JSON;
@@ -289,7 +289,7 @@ builder {
     enable "Session",
 
     #mod_shib should intercept all requests to this path
-    mount "/auth/shibboleth"  => LibreCat::Auth::SSO::Shibboleth->new(
+    mount "/auth/shibboleth"  => Plack::Auth::SSO::Shibboleth->new(
         uri_base => $uri_base,
         authorization_path => "/authorize",
         uid_field => "uid",
@@ -431,6 +431,6 @@ Nicolas Franck, C<< <nicolas.franck at ugent.be> >>
 
 =head1 SEE ALSO
 
-L<LibreCat::Auth::SSO>
+L<Plack::Auth::SSO>
 
 =cut
