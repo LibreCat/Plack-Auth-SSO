@@ -70,7 +70,15 @@ sub set_auth_sso {
 
 =head1 NAME
 
-LibreCat::Auth::SSO - LibreCat role for Single Sign On (SSO) authentication
+LibreCat::Auth::SSO - role for Single Sign On (SSO) authentication
+
+=head1 IMPLEMENTATIONS
+
+* SSO for Central Authentication System (CAS): L<LibreCat::Auth::SSO::CAS>
+
+* SSO for ORCID: L<LibreCat::Auth::SSO::ORCID>
+
+* SSO for Shibboleth: L<LibreCat::Auth::SSO::Shibboleth>
 
 =head1 SYNOPSIS
 
@@ -301,6 +309,14 @@ See examples/app1:
 
     #start plack application
     plackup examples/app1.pl
+
+=head1 QUESTIONS
+
+* Is this part of LibreCat project (L<https://github.com/LibreCat/LibreCat>)? Do I need LibreCat too?
+
+No. There is no requirement for LibreCat.
+
+I just needed a namespace, and Plack::Auth::SSO seemed too greedy.
 
 =head1 AUTHOR
 
