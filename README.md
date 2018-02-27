@@ -1,6 +1,14 @@
 # NAME
 
-LibreCat::Auth::SSO - LibreCat role for Single Sign On (SSO) authentication
+LibreCat::Auth::SSO - role for Single Sign On (SSO) authentication
+
+# IMPLEMENTATIONS
+
+\* SSO for Central Authentication System (CAS): [LibreCat::Auth::SSO::CAS](https://metacpan.org/pod/LibreCat::Auth::SSO::CAS)
+
+\* SSO for ORCID: [LibreCat::Auth::SSO::ORCID](https://metacpan.org/pod/LibreCat::Auth::SSO::ORCID)
+
+\* SSO for Shibboleth: [LibreCat::Auth::SSO::Shibboleth](https://metacpan.org/pod/LibreCat::Auth::SSO::Shibboleth)
 
 # SYNOPSIS
 
@@ -227,6 +235,14 @@ See examples/app1:
 
     #start plack application
     plackup examples/app1.pl
+
+# QUESTIONS
+
+\* Is this part of LibreCat project ([https://github.com/LibreCat/LibreCat](https://github.com/LibreCat/LibreCat))? Do I need LibreCat too?
+
+No. There is no requirement for LibreCat.
+
+I just needed a namespace, and Plack::Auth::SSO seemed too greedy.
 
 # AUTHOR
 
