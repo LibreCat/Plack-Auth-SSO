@@ -27,6 +27,7 @@ my %module_build_args = (
     "Carp" => 0,
     "Catmandu" => "1.06",
     "Clone" => 0,
+    "LWP::Protocol::https" => 0,
     "LWP::UserAgent" => 0,
     "Moo" => 0,
     "Moo::Role" => 0,

@@ -13,3 +13,4 @@ requires 'URI';
 requires 'LWP::UserAgent';
 requires 'WWW::ORCID';
 requires 'Clone';
+requires 'LWP::Protocol::https';
