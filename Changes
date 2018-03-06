@@ -1,5 +1,6 @@
 {{$NEXT}}
   - Authen::CAS::Client has implicit dependency LWP::Protocol::https
+  - remove environment variables from source code
 
 0.011  2018-02-27 13:58:36 CET
   - Renamed to Plack::Auth::SSO

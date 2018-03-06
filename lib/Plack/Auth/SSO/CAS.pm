@@ -33,10 +33,6 @@ has response_parser => (
 
 sub _build_cas {
     my $self = $_[0];
-
-    #TODO
-    local $ENV{SSL_VERIFY_NONE}              = 1;
-    local $ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;
     Authen::CAS::Client->new($self->cas_url());
 }
 sub _build_response_parser {
