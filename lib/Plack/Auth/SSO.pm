@@ -6,7 +6,7 @@ use Carp;
 use Moo::Role;
 use namespace::clean;
 
-our $VERSION = "0.011";
+our $VERSION = "0.012";
 
 with "Catmandu::Logger";
 
