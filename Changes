@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+0.013  2018-03-07 10:03:34 CET
   - remove dependency Catmandu
   - Plack::Auth::SSO::CAS : show application error instead of redirecting to cas_url.
   - response parser for CAS should also handle default namespaces

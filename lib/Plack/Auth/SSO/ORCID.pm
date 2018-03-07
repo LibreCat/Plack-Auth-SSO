@@ -12,7 +12,7 @@ use WWW::ORCID;
 use JSON;
 use Plack::Auth::SSO::ResponseParser::ORCID;
 
-our $VERSION = "0.012";
+our $VERSION = "0.013";
 
 with "Plack::Auth::SSO";
 
