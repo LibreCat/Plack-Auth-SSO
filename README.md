@@ -2,6 +2,12 @@
 
 Plack::Auth::SSO - role for Single Sign On (SSO) authentication
 
+# STATUS
+
+[![Build Status](https://travis-ci.org/LibreCat/Plack-Auth-SSO.svg?branch=master)](https://travis-ci.org/LibreCat/Plack-Auth-SSO)
+[![Coverage](https://coveralls.io/repos/LibreCat/Plack-Auth-SSO/badge.png?branch=master)](https://coveralls.io/r/LibreCat/Plack-Auth-SSO)
+[![CPANTS kwalitee](http://cpants.cpanauthors.org/dist/Plack-Auth-SSO.png)](http://cpants.cpanauthors.org/dist/Plack-Auth-SSO)
+
 # IMPLEMENTATIONS
 
 \* SSO for Central Authentication System (CAS): [Plack::Auth::SSO::CAS](https://metacpan.org/pod/Plack::Auth::SSO::CAS)
