@@ -3,7 +3,6 @@ package Plack::Auth::SSO;
 use strict;
 use utf8;
 use Data::Util qw(:check);
-use Carp;
 use Moo::Role;
 use namespace::clean;
 

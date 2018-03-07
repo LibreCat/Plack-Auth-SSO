@@ -5,7 +5,6 @@ requires 'Data::Util';
 requires 'Moo';
 requires 'Moo::Role';
 requires 'namespace::clean';
-requires 'Carp';
 requires 'Authen::CAS::Client';
 requires 'Plack';
 requires 'Plack::Middleware::Session';

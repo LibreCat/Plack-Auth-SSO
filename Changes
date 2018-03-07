@@ -1,4 +1,7 @@
 {{$NEXT}}
+  - remove dependency Catmandu
+  - Plack::Auth::SSO::CAS : show application error instead of redirecting to cas_url.
+  - response parser for CAS should also handle default namespaces
 
 0.012  2018-03-06 13:47:46 CET
   - Authen::CAS::Client has implicit dependency LWP::Protocol::https
