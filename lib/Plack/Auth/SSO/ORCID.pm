@@ -1,7 +1,8 @@
 package Plack::Auth::SSO::ORCID;
 
-use Catmandu::Sane;
-use Catmandu::Util qw(:check :is);
+use strict;
+use utf8;
+use Data::Util qw(:check);
 use Moo;
 use Plack::Request;
 use Plack::Session;
@@ -22,12 +23,12 @@ has sandbox => (
 );
 has client_id => (
     is => "ro",
-    isa => sub { check_string($_[0]); },
+    isa => sub { is_string($_[0]) or die("client_id should be string"); },
     required => 1
 );
 has client_secret => (
     is => "ro",
-    isa => sub { check_string($_[0]); },
+    isa => sub { is_string($_[0]) or die("client_secret should be string"); },
     required => 1
 );
 has orcid => (

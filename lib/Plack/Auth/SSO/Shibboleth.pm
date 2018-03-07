@@ -1,7 +1,9 @@
 package Plack::Auth::SSO::Shibboleth;
 
-use Catmandu::Sane;
-use Catmandu::Util qw(:check :is array_includes);
+use strict;
+use utf8;
+use feature qw(:5.10);
+use Data::Util qw(:check);
 use Moo;
 use Plack::Request;
 use Plack::Session;
@@ -17,32 +19,34 @@ with "Plack::Auth::SSO";
 has request_type => (
     is => "ro",
     isa => sub {
-        array_includes([qw(env header)],$_[0]) or die("request_type must be either 'env' or 'header'");
+        my $r = $_[0];
+        is_string( $r ) or die( "request_type should be string" );
+        $r eq "env" || $r eq "header" || die( "request_type must be either 'env' or 'header'" );
     },
     lazy => 1,
     default => sub { "env"; }
 );
 has shib_session_id_field => (
     is => "ro",
-    isa => sub { check_string($_[0]); },
+    isa => sub { is_string( $_[0] ) or die( "shib_session_id_field should be string" ); },
     lazy => 1,
     default => sub { "Shib-Session-ID"; }
 );
 has shib_application_id_field => (
     is => "ro",
-    isa => sub { check_string($_[0]); },
+    isa => sub { is_string( $_[0] ) or die( "shib_application_id_field should be string" ); },
     lazy => 1,
     default => sub { "Shib-Application-ID"; }
 );
 has uid_field => (
     is => "ro",
-    isa => sub { check_string($_[0]); },
+    isa => sub { is_string( $_[0] ) or die( "uid_field should be string" ); },
     lazy => 1,
     default => sub { "eppn"; }
 );
 has info_fields => (
     is => "ro",
-    isa => sub { check_array_ref($_[0]); },
+    isa => sub { is_array_ref( $_[0] ) or die( "info_fields should be array ref" ); },
     lazy => 1,
     default => sub { []; }
 );
@@ -275,8 +279,8 @@ This module merely convert these attributes.
 
 =item plack application
 
-use Catmandu::Sane;
-use Catmandu::Util qw(:is);
+use strict;
+use Data::Util qw(:check);
 use Plack::Auth::SSO::Shibboleth;
 use Plack::Builder;
 use Plack::Session;

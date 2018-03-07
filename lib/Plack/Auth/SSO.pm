@@ -1,25 +1,24 @@
 package Plack::Auth::SSO;
 
-use Catmandu::Sane;
-use Catmandu::Util qw(check_string);
+use strict;
+use utf8;
+use Data::Util qw(:check);
 use Carp;
 use Moo::Role;
 use namespace::clean;
 
 our $VERSION = "0.012";
 
-with "Catmandu::Logger";
-
 has session_key => (
     is       => "ro",
-    isa      => sub { check_string($_[0]); },
+    isa      => sub { is_string($_[0]) or die("session_key should be string"); },
     lazy     => 1,
     default  => sub { "auth_sso" },
     required => 1
 );
 has authorization_path => (
     is       => "ro",
-    isa      => sub { check_string($_[0]); },
+    isa      => sub { is_string($_[0]) or die("authorization_path should be string"); },
     lazy     => 1,
     default  => sub { "/"; },
     required => 1
@@ -31,7 +30,7 @@ has id => (
 );
 has uri_base => (
     is       => "ro",
-    isa      => sub { check_string($_[0]); },
+    isa      => sub { is_string($_[0]) or die("uri_base should be string"); },
     required => 1,
     default  => sub { "http://localhost:5000"; }
 );
@@ -85,7 +84,7 @@ Plack::Auth::SSO - role for Single Sign On (SSO) authentication
     package MySSOAuth;
 
     use Moo;
-    use Catmandu::Util qw(:is);
+    use Data::Util qw(:check);
 
     with "Plack::Auth::SSO";
 

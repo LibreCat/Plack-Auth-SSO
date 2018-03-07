@@ -1,7 +1,8 @@
 package Plack::Auth::SSO::ResponseParser::ORCID;
 
-use Catmandu::Sane;
-use Catmandu::Util qw(is_string);
+use strict;
+use utf8;
+use Data::Util qw(:check);
 use JSON;
 use Moo;
 use Clone qw();

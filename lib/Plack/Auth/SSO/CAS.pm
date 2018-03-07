@@ -1,7 +1,8 @@
 package Plack::Auth::SSO::CAS;
 
-use Catmandu::Sane;
-use Catmandu::Util qw(:check :is);
+use strict;
+use utf8;
+use Data::Util qw(:check);
 use Authen::CAS::Client;
 use Moo;
 use Plack::Request;
@@ -15,7 +16,7 @@ with "Plack::Auth::SSO";
 
 has cas_url => (
     is => "ro",
-    isa => sub { check_string($_[0]); },
+    isa => sub { is_string($_[0]) or die("cas_url should be string"); },
     required => 1
 );
 has cas => (

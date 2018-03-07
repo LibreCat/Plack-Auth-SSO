@@ -1,7 +1,8 @@
 package Plack::Auth::SSO::ResponseParser::CAS;
 
-use Catmandu::Sane;
-use Catmandu::Util qw(:check :is);
+use strict;
+use utf8;
+use Data::Util qw(:check);
 use Moo;
 use XML::LibXML;
 use XML::LibXML::XPathContext;

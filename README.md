@@ -15,7 +15,7 @@ Plack::Auth::SSO - role for Single Sign On (SSO) authentication
     package MySSOAuth;
 
     use Moo;
-    use Catmandu::Util qw(:is);
+    use Data::Util qw(:check);
 
     with "Plack::Auth::SSO";
 
