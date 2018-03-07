@@ -4,7 +4,6 @@ requires 'perl','v5.10.1';
 requires 'Data::Util';
 requires 'Moo';
 requires 'Moo::Role';
-requires 'namespace::clean';
 requires 'Authen::CAS::Client';
 requires 'Plack';
 requires 'Plack::Middleware::Session';
