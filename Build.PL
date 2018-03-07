@@ -24,7 +24,6 @@ my %module_build_args = (
   "recursive_test_files" => 1,
   "requires" => {
     "Authen::CAS::Client" => 0,
-    "Carp" => 0,
     "Clone" => 0,
     "Data::Util" => 0,
     "LWP::Protocol::https" => 0,
@@ -35,7 +34,6 @@ my %module_build_args = (
     "Plack::Middleware::Session" => 0,
     "URI" => 0,
     "WWW::ORCID" => 0,
-    "namespace::clean" => 0,
     "perl" => "v5.10.1"
   }
 );
