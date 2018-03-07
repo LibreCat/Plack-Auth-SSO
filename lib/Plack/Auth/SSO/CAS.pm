@@ -99,6 +99,17 @@ sub to_app {
                 ];
 
             }
+            #e.g. "Can't connect to localhost:8443 (certificate verify failed)"
+            elsif( $r->is_error() ) {
+
+                return [
+                    500,
+                    [ "Content-Type" => "text/html" ],
+                    [ $r->doc() ]
+                ];
+
+            }
+            #$r->is_failure() -> authenticationFailure: return to authentication url
 
         }
 
