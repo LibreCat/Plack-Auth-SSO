@@ -11,7 +11,6 @@ use LWP::UserAgent;
 use WWW::ORCID;
 use JSON;
 use Plack::Auth::SSO::ResponseParser::ORCID;
-use namespace::clean;
 
 our $VERSION = "0.012";
 

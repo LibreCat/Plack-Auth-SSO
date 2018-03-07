@@ -4,7 +4,6 @@ use strict;
 use utf8;
 use Data::Util qw(:check);
 use Moo::Role;
-use namespace::clean;
 
 our $VERSION = "0.012";
 

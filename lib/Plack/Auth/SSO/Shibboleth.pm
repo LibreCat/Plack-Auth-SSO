@@ -8,7 +8,6 @@ use Moo;
 use Plack::Request;
 use Plack::Session;
 use JSON;
-use namespace::clean;
 
 our $VERSION = "0.012";
 

@@ -6,7 +6,6 @@ use Data::Util qw(:check);
 use JSON;
 use Moo;
 use Clone qw();
-use namespace::clean;
 
 our $VERSION = "0.012";
 
