@@ -69,6 +69,16 @@ sub set_auth_sso {
 
 Plack::Auth::SSO - role for Single Sign On (SSO) authentication
 
+=begin markdown
+
+# STATUS
+
+[![Build Status](https://travis-ci.org/LibreCat/Plack-Auth-SSO.svg?branch=master)](https://travis-ci.org/LibreCat/Plack-Auth-SSO)
+[![Coverage](https://coveralls.io/repos/LibreCat/Plack-Auth-SSO/badge.png?branch=master)](https://coveralls.io/r/LibreCat/Plack-Auth-SSO)
+[![CPANTS kwalitee](http://cpants.cpanauthors.org/dist/Plack-Auth-SSO.png)](http://cpants.cpanauthors.org/dist/Plack-Auth-SSO)
+
+=end markdown
+
 =head1 IMPLEMENTATIONS
 
 * SSO for Central Authentication System (CAS): L<Plack::Auth::SSO::CAS>
