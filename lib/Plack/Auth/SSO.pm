@@ -5,7 +5,7 @@ use utf8;
 use Data::Util qw(:check);
 use Moo::Role;
 
-our $VERSION = "0.013";
+our $VERSION = "0.0131";
 
 has session_key => (
     is       => "ro",

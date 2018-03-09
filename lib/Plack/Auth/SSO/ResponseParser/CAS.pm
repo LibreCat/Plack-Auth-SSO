@@ -7,7 +7,7 @@ use Moo;
 use XML::LibXML;
 use XML::LibXML::XPathContext;
 
-our $VERSION = "0.013";
+our $VERSION = "0.0131";
 
 with "Plack::Auth::SSO::ResponseParser";
 
