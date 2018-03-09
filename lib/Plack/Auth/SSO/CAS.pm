@@ -63,8 +63,14 @@ sub to_app {
 
         #ticket?
         my $ticket = $params->get("ticket");
+        my $request_uri = $request->request_uri();
+        my $idx = index( $request_uri, "?" );
+        if ( $idx >= 0 ) {
 
-        my $service = $self->uri_for($request->script_name());
+            $request_uri = substr( $request_uri, 0, $idx );
+
+        }
+        my $service = $self->uri_for($request_uri);
 
         if (is_string($ticket)) {
 

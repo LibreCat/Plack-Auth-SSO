@@ -143,7 +143,15 @@ sub to_app {
         #request phase
         else {
 
-            my $redirect_uri = URI->new( $self->uri_for($request->script_name) );
+            my $request_uri = $request->request_uri();
+            my $idx = index( $request_uri, "?" );
+            if ( $idx >= 0 ) {
+
+                $request_uri = substr( $request_uri, 0, $idx );
+
+            }
+
+            my $redirect_uri = URI->new( $self->uri_for($request_uri) );
             $redirect_uri->query_form({ _callback => "true" });
 
             my $auth_uri = $self->orcid()->authorize_url(
