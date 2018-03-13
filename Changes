@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+0.0132  2018-03-13 09:54:44 CET
   - require WWW::ORCID 0.0401 to make Auth::ORCID work again
 
 0.0131  2018-03-09 08:59:43 CET
