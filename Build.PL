@@ -33,7 +33,7 @@ my %module_build_args = (
     "Plack" => 0,
     "Plack::Middleware::Session" => 0,
     "URI" => 0,
-    "WWW::ORCID" => 0,
+    "WWW::ORCID" => "0.0401",
     "perl" => "v5.10.1"
   }
 );
