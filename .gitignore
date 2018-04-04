@@ -15,3 +15,4 @@ nytprof.out
 nytprof/
 local/
 examples/catmandu.yml
+cover_db
