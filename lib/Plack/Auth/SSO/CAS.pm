@@ -2,6 +2,7 @@ package Plack::Auth::SSO::CAS;
 
 use strict;
 use utf8;
+use feature qw(:5.10);
 use Data::Util qw(:check);
 use Authen::CAS::Client;
 use Moo;
@@ -18,30 +19,13 @@ has cas_url => (
     isa => sub { is_string($_[0]) or die("cas_url should be string"); },
     required => 1
 );
-has cas => (
-    is => "ro",
-    lazy => 1,
-    builder => "_build_cas",
-    init_arg => undef
-);
-has response_parser => (
-    is => "ro",
-    lazy => 1,
-    builder => "_build_response_parser",
-    init_arg => undef
-);
-
-sub _build_cas {
-    my $self = $_[0];
-    Authen::CAS::Client->new($self->cas_url());
-}
-sub _build_response_parser {
-    Plack::Auth::SSO::ResponseParser::CAS->new();
-}
 
 sub to_app {
     my $self = $_[0];
     sub {
+
+        state $response_parser = Plack::Auth::SSO::ResponseParser::CAS->new();
+        state $cas = Authen::CAS::Client->new($self->cas_url());
 
         my $env = $_[0];
 
@@ -86,7 +70,7 @@ sub to_app {
                     $session,
                     {
                         %{
-                            $self->response_parser()->parse( $doc )
+                            $response_parser->parse( $doc )
                         },
                         package    => __PACKAGE__,
                         package_id => $self->id,
@@ -119,7 +103,7 @@ sub to_app {
         }
 
         #no ticket or ticket validation failed
-        my $login_url = $self->cas()->login_url($service)->as_string;
+        my $login_url = $cas->login_url($service)->as_string;
 
         [302, [Location => $login_url], []];
 

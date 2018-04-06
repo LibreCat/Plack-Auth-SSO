@@ -2,6 +2,7 @@ package Plack::Auth::SSO::ORCID;
 
 use strict;
 use utf8;
+use feature qw(:5.10);
 use Data::Util qw(:check);
 use Moo;
 use Plack::Request;
@@ -30,46 +31,21 @@ has client_secret => (
     isa => sub { is_string($_[0]) or die("client_secret should be string"); },
     required => 1
 );
-has orcid => (
-    is => "ro",
-    lazy => 1,
-    builder => "_build_orcid",
-    init_arg => undef
-);
-has json => (
-    is      => "ro",
-    lazy    => 1,
-    default => sub { JSON->new()->utf8(1); },
-    init_arg => undef
-);
-has response_parser => (
-    is => "ro",
-    lazy => 1,
-    builder => "_build_response_parser",
-    init_arg => undef
-);
-
-sub _build_orcid {
-
-    my $self = $_[0];
-
-    WWW::ORCID->new(
-        client_id => $self->client_id(),
-        client_secret => $self->client_secret(),
-        sandbox => $self->sandbox(),
-        public => 1,
-        transport => "LWP"
-    );
-
-}
-sub _build_response_parser {
-    Plack::Auth::SSO::ResponseParser::ORCID->new();
-}
 
 sub to_app {
     my $self = $_[0];
 
     sub {
+
+        state $orcid = WWW::ORCID->new(
+            client_id => $self->client_id(),
+            client_secret => $self->client_secret(),
+            sandbox => $self->sandbox(),
+            public => 1,
+            transport => "LWP"
+        );
+        state $json = JSON->new()->utf8(1);
+        state $response_parser = Plack::Auth::SSO::ResponseParser::ORCID->new();
 
         my $env = $_[0];
 
@@ -107,7 +83,7 @@ sub to_app {
             }
 
             #access_token returns either a hash (from ORCID), or undef
-            my $res = $self->orcid()->access_token(
+            my $res = $orcid->access_token(
                 grant_type => "authorization_code",
                 code => $params->get("code")
             );
@@ -115,7 +91,7 @@ sub to_app {
             #error is always a PSGI Response
             unless ( $res ) {
 
-                return $self->orcid()->last_error();
+                return $orcid->last_error();
 
             }
 
@@ -123,12 +99,12 @@ sub to_app {
                 $session,
                 {
                     %{
-                        $self->response_parser()->parse( $res )
+                        $response_parser->parse( $res )
                     },
                     package    => __PACKAGE__,
                     package_id => $self->id,
                     response   => {
-                        content => $self->json()->encode( $res ),
+                        content => $json->encode( $res ),
                         content_type => "application/json"
                     }
                 }
@@ -154,7 +130,7 @@ sub to_app {
             my $redirect_uri = URI->new( $self->uri_for($request_uri) );
             $redirect_uri->query_form({ _callback => "true" });
 
-            my $auth_uri = $self->orcid()->authorize_url(
+            my $auth_uri = $orcid->authorize_url(
                 show_login => "true",
                 scope => "/authenticate",
                 response_type => "code",
