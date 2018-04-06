@@ -18,8 +18,12 @@ on 'test' => sub {
     requires 'Test::More';
     requires 'Test::Exception';
     requires 'Plack::Test';
+    requires 'Plack::Test::Server';
     requires 'Plack::Builder';
     requires 'Plack::Session';
     requires 'HTTP::Request::Common';
     requires 'HTTP::Cookies';
+    requires 'Dancer::Middleware::Rebase';
+    requires 'URI::Escape';
+    requires 'LWP::UserAgent';
 };
