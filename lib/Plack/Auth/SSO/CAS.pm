@@ -58,8 +58,6 @@ sub to_app {
 
         if (is_string($ticket)) {
 
-            my $cas = $self->cas();
-
             my $r = $cas->service_validate($service, $ticket);
 
             if ($r->is_success) {
