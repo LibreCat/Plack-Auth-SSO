@@ -104,6 +104,7 @@ lives_ok(sub {
     $app = builder {
 
         enable "Session";
+        enable "+Dancer::Middleware::Rebase", base => $uri_base, strip => 0;
         mount "/auth/cas" => $auth->to_app;
         mount "/login" => sub {
             my $env = shift;
