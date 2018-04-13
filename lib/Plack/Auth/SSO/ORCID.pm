@@ -21,6 +21,15 @@ has sandbox => (
     is => "ro",
     required => 0
 );
+has public => (
+    is => "ro",
+    required => 0,
+    lazy => 1,
+    default => sub { 1; }
+);
+has scope => (
+    is => "lazy"
+);
 has client_id => (
     is => "ro",
     isa => sub { is_string($_[0]) or die("client_id should be string"); },
@@ -32,6 +41,11 @@ has client_secret => (
     required => 1
 );
 
+sub _build_scope {
+    my $self = $_[0];
+    $self->public() ? "/authenticate" : "/read-limited";
+}
+
 sub to_app {
     my $self = $_[0];
 
@@ -41,7 +55,7 @@ sub to_app {
             client_id => $self->client_id(),
             client_secret => $self->client_secret(),
             sandbox => $self->sandbox(),
-            public => 1,
+            public => $self->public(),
             transport => "LWP"
         );
         state $json = JSON->new()->utf8(1);
@@ -65,10 +79,10 @@ sub to_app {
 
         }
 
-        my $callback = $params->get("_callback");
+        my $code = $params->get("code");
 
         #callback phase
-        if ( is_string($callback) ) {
+        if ( is_string($code) ) {
 
             my $error             = $params->get("error");
             my $error_description = $params->get("error_description");
@@ -85,7 +99,7 @@ sub to_app {
             #access_token returns either a hash (from ORCID), or undef
             my $res = $orcid->access_token(
                 grant_type => "authorization_code",
-                code => $params->get("code")
+                code => $code
             );
 
             #error is always a PSGI Response
@@ -94,7 +108,6 @@ sub to_app {
                 return $orcid->last_error();
 
             }
-
             $self->set_auth_sso(
                 $session,
                 {
@@ -128,11 +141,10 @@ sub to_app {
             }
 
             my $redirect_uri = URI->new( $self->uri_for($request_uri) );
-            $redirect_uri->query_form({ _callback => "true" });
 
             my $auth_uri = $orcid->authorize_url(
                 show_login => "true",
-                scope => "/authenticate",
+                scope => $self->scope(),
                 response_type => "code",
                 redirect_uri => $redirect_uri->as_string()
             );
@@ -230,7 +242,22 @@ client_secret for your application (see developer credentials from ORCID)
 
 =item sandbox
 
-0|1. Defaults to "0". When set to "1", this api makes use of http://sandbox.orcid.org instead of http://orcid.org.
+0|1. Defaults to 0. When set to 1, this api makes use of http://sandbox.orcid.org instead of http://orcid.org.
+
+=item public
+
+0|1. Defaults to 1. 0 means you're using the member API.
+
+=item scope
+
+Requested scope. When not set, the parameter "public" will decide the value:
+
+* public 1 : scope is "/authenticate"
+
+* public 0 : scope is "/read-limited"
+
+Please consult the ORCID to make sure that the parameters "public" and "scope" do not clash.
+(e.g. public is 1 and scope is "/read-limited")
 
 =back
 
