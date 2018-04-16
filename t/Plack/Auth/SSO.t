@@ -29,6 +29,7 @@ my $uri_base = "http://localhost:5001";
 my $session_key = "my_auth_sso";
 my $id = "my_id";
 my $authorization_path = "/authorize";
+my $error_path = "/error";
 
 lives_ok(
     sub{
@@ -36,7 +37,8 @@ lives_ok(
             uri_base => $uri_base,
             session_key => $session_key,
             id => $id,
-            authorization_path => $authorization_path
+            authorization_path => $authorization_path,
+            error_path => $error_path
         );
     }
 );
@@ -75,6 +77,22 @@ lives_ok(
                 }
 
             };
+            mount $error_path => sub {
+
+                my $env = shift;
+
+                my $session = Plack::Session->new( $env );
+                my $auth_sso_error = $session->get( $session_key . "_error" );
+
+                unless( is_hash_ref( $auth_sso_error ) ){
+
+                    return [ 200, [ "Content-Type" => "text/plain" ], [ "no errors" ] ];
+
+                }
+
+                [ 400, [ "Content-Type" => "text/plain" ], [ $auth_sso_error->{content} ] ];
+
+            };
 
         };
 
@@ -97,6 +115,14 @@ my $res = $plack_test->request( GET "$uri_base/authorize" );
 is $res->code, 401, "authorization_path return 401 without authentication";
 
 $res = $plack_test->request( GET "$uri_base/auth/mock" );
+
+is $res->header("location"), "https://mock.sso.com", "authenticator redirects to external application";
+
+$res = $plack_test->request( GET "$uri_base/auth/mock?code=invalid-code" );
+
+is $res->header("location"), $uri_base.$error_path, "authenticator redirects errors to error_path";
+
+$res = $plack_test->request( GET "$uri_base/auth/mock?code=authenticated" );
 
 is $res->header("location"), $uri_base.$authorization_path, "authenticator redirects to authorization_path";
 
