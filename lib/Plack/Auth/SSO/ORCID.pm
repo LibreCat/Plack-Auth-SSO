@@ -41,9 +41,69 @@ has client_secret => (
     required => 1
 );
 
+has orcid => (
+    is => "lazy",
+    init_arg => undef
+);
+has response_parser => (
+    is => "ro",
+    lazy => 1,
+    default => sub {
+        Plack::Auth::SSO::ResponseParser::ORCID->new();
+    },
+    init_arg => undef
+);
+has json => (
+    is => "ro",
+    lazy => 1,
+    default => sub {
+        JSON->new->utf8(1);
+    },
+    init_arg => undef
+);
+
+sub _build_orcid {
+
+    my $self = $_[0];
+
+    WWW::ORCID->new(
+        client_id => $self->client_id(),
+        client_secret => $self->client_secret(),
+        sandbox => $self->sandbox(),
+        public => $self->public(),
+        transport => "LWP"
+    );
+
+}
+
 sub _build_scope {
     my $self = $_[0];
     $self->public() ? "/authenticate" : "/read-limited";
+}
+
+sub redirect_to_login {
+
+    my ( $self, $request ) = @_;
+
+    my $request_uri = $request->request_uri();
+    my $idx = index( $request_uri, "?" );
+    if ( $idx >= 0 ) {
+
+        $request_uri = substr( $request_uri, 0, $idx );
+
+    }
+
+    my $redirect_uri = URI->new( $self->uri_for($request_uri) );
+
+    my $auth_uri = $self->orcid->authorize_url(
+        show_login => "true",
+        scope => $self->scope(),
+        response_type => "code",
+        redirect_uri => $redirect_uri->as_string()
+    );
+
+    [ 302, [ Location => $auth_uri ], [] ];
+
 }
 
 sub to_app {
@@ -51,15 +111,9 @@ sub to_app {
 
     sub {
 
-        state $orcid = WWW::ORCID->new(
-            client_id => $self->client_id(),
-            client_secret => $self->client_secret(),
-            sandbox => $self->sandbox(),
-            public => $self->public(),
-            transport => "LWP"
-        );
-        state $json = JSON->new()->utf8(1);
-        state $response_parser = Plack::Auth::SSO::ResponseParser::ORCID->new();
+        state $orcid = $self->orcid;
+        state $json = $self->json;
+        state $response_parser = $self->response_parser;
 
         my $env = $_[0];
 
@@ -72,10 +126,7 @@ sub to_app {
         #already got here before
         if ( is_hash_ref($auth_sso) ) {
 
-            return [
-                302, [ Location => $self->uri_for($self->authorization_path) ],
-                []
-            ];
+            return $self->redirect_to_authorization();
 
         }
 
@@ -89,10 +140,15 @@ sub to_app {
 
             if ( is_string($error) ) {
 
-                return [
-                    500, [ "Content-Type" => "text/html" ],
-                    [ $error_description ]
-                ];
+                return $self->redirect_to_login( $request ) if $error eq "401";
+
+                $self->set_auth_sso_error( $session, {
+                    package    => __PACKAGE__,
+                    package_id => $self->id,
+                    type => $error,
+                    content => $error_description
+                });
+                return $self->redirect_to_error();
 
             }
 
@@ -102,10 +158,37 @@ sub to_app {
                 code => $code
             );
 
-            #error is always a PSGI Response
             unless ( $res ) {
 
-                return $orcid->last_error();
+                my( $code, $h, $body ) = @{ $orcid->last_error };
+                my %headers = %$h;
+
+                if ( index( $headers{"content-type"}, "json" ) >= 0 ) {
+
+                    my $orcid_res = $json->decode( $body );
+
+                    return $self->redirect_to_login( $request ) if $orcid_res->{error} eq "401";
+
+                    $self->set_auth_sso_error( $session, {
+                        package    => __PACKAGE__,
+                        package_id => $self->id,
+                        type => $orcid_res->{error},
+                        content => $orcid_res->{error_description}
+                    });
+
+                }
+                else {
+
+                    $self->set_auth_sso_error( $session, {
+                        package    => __PACKAGE__,
+                        package_id => $self->id,
+                        type => "unknown",
+                        content => $body
+                    });
+
+                }
+
+                return $self->redirect_to_error();
 
             }
             $self->set_auth_sso(
@@ -123,33 +206,14 @@ sub to_app {
                 }
             );
 
-            return [
-                302, [ Location => $self->uri_for($self->authorization_path) ],
-                []
-            ];
+            return $self->redirect_to_authorization();
+
         }
 
         #request phase
         else {
 
-            my $request_uri = $request->request_uri();
-            my $idx = index( $request_uri, "?" );
-            if ( $idx >= 0 ) {
-
-                $request_uri = substr( $request_uri, 0, $idx );
-
-            }
-
-            my $redirect_uri = URI->new( $self->uri_for($request_uri) );
-
-            my $auth_uri = $orcid->authorize_url(
-                show_login => "true",
-                scope => $self->scope(),
-                response_type => "code",
-                redirect_uri => $redirect_uri->as_string()
-            );
-
-            [ 302, [ Location => $auth_uri ], [] ];
+            $self->redirect_to_login( $request );
 
         }
     };
@@ -224,6 +288,24 @@ This is an implementation of L<Plack::Auth::SSO> to authenticate against a ORCID
 
 It inherits all configuration options from its parent.
 
+Remember that this module only performs these steps:
+
+* redirect to ORCID authorize url
+
+* exchange authorization code for access token
+
+Those steps provide the following information:
+
+* uid: derived from "orcid"
+
+* info.name: derived from "name"
+
+* extra: everything else is that was returned in the hash response from ORCID
+
+extra.access_token contains a code that conforms to the scope requested (see below).
+
+If you want to request additional information from ORCID
+
 =head1 CONFIG
 
 Register the uri of this application in ORCID as a new redirect_uri.
@@ -260,6 +342,29 @@ Please consult the ORCID to make sure that the parameters "public" and "scope" d
 (e.g. public is 1 and scope is "/read-limited")
 
 =back
+
+=head1 ERRORS
+
+Known ORCID errors are stored in the session key auth_sso_error ( L<Plack::Auth::SSO> ).
+
+"error" becomes "type"
+
+"error_description" becomes "content"
+
+Example:
+
+    {
+        package => "Plack::Auth::SSO::ORCID",
+        package_id => "Plack::Auth::SSO::ORCID",
+        type => "invalid_grant",
+        content => "Reused authorization code: abcdefg"
+
+    }
+
+L<https://members.orcid.org/api/resources/error-codes>
+
+when it receives an non json response from ORCID, the type is "unknown", and
+content is set to the full return value.
 
 =head1 AUTHOR
 

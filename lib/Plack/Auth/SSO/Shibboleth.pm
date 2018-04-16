@@ -178,6 +178,14 @@ It inherits all configuration options from its parent.
 
 =over 4
 
+=item error_path
+
+This option is inherited by its parent class L<Plack::Auth::SSO>, but cannot be used unfortunately
+
+because an SP will never allow an invalid request to be passed to the backend. This should be configured in
+
+/etc/shibboleth/shibboleth2.xml ( cf. https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPErrors ).
+
 =item request_type
 
 * "env": Shibboleth SP sends attributes using environment variables (CGI and FCGI)

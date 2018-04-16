@@ -35,12 +35,38 @@ my %module_build_args = (
     "URI" => 0,
     "WWW::ORCID" => "0.0401",
     "perl" => "v5.10.1"
+  },
+  "test_requires" => {
+    "Dancer::Middleware::Rebase" => 0,
+    "Devel::Cover" => 0,
+    "HTTP::Cookies" => 0,
+    "HTTP::Request::Common" => 0,
+    "LWP::UserAgent" => 0,
+    "Plack::Builder" => 0,
+    "Plack::Session" => 0,
+    "Plack::Test" => 0,
+    "Plack::Test::Server" => 0,
+    "Test::Exception" => 0,
+    "Test::More" => 0,
+    "URI::Escape" => 0
   }
 );
 
 
 my %fallback_build_requires = (
-  "Module::Build" => "0.28"
+  "Dancer::Middleware::Rebase" => 0,
+  "Devel::Cover" => 0,
+  "HTTP::Cookies" => 0,
+  "HTTP::Request::Common" => 0,
+  "LWP::UserAgent" => 0,
+  "Module::Build" => "0.28",
+  "Plack::Builder" => 0,
+  "Plack::Session" => 0,
+  "Plack::Test" => 0,
+  "Plack::Test::Server" => 0,
+  "Test::Exception" => 0,
+  "Test::More" => 0,
+  "URI::Escape" => 0
 );
 
 
