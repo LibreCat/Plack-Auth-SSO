@@ -239,7 +239,8 @@ Plack::Auth::SSO::ORCID - implementation of Plack::Auth::SSO for ORCID
             client_secret => "mypassword",
             sandbox => 1,
             uri_base => "http://localhost:5000",
-            authorization_path => "/auth/orcid/callback"
+            authorization_path => "/auth/orcid/callback",
+            error_path => "/auth/error"
         )->to_app;
 
         #DO NOT register this uri as new redirect_uri in ORCID
@@ -276,6 +277,26 @@ Plack::Auth::SSO::ORCID - implementation of Plack::Auth::SSO for ORCID
             #you can reuse the "orcid" and "access_token" to get the user profile
 
             [ 200, ["Content-Type" => "text/html"], ["logged in!"] ];
+
+        };
+
+        mount "/auth/error" => sub {
+
+            my $env = shift;
+            my $session = Plack::Session->new($env);
+            my $auth_sso_error = $session->get("auth_sso_error");
+
+            unless ( $auth_sso_error ) {
+
+                return [ 302, [ Location => $self->uri_for( "/" ) ], [] ];
+
+            }
+
+            [ 200, [ "Content-Type" => "text/plain" ], [
+                "Something went wrong. User could not be authenticated against CAS\n",
+                "Please report this error:\n",
+                $auth_sso_error->{content}
+            ]];
 
         };
 

@@ -176,7 +176,8 @@ Plack::Auth::SSO::CAS - implementation of Plack::Auth::SSO for CAS
 
             session_key => "auth_sso",
             uri_base => "http://localhost:5000",
-            authorization_path => "/auth/cas/callback"
+            authorization_path => "/auth/cas/callback",
+            error_path => "/auth/error"
 
         )->to_app;
 
@@ -196,6 +197,26 @@ Plack::Auth::SSO::CAS - implementation of Plack::Auth::SSO for CAS
             #process auth_sso (white list, roles ..)
 
             [200,["Content-Type" => "text/html"],["logged in!"]];
+
+        };
+
+        mount "/auth/error" => sub {
+
+            my $env = shift;
+            my $session = Plack::Session->new($env);
+            my $auth_sso_error = $session->get("auth_sso_error");
+
+            unless ( $auth_sso_error ) {
+
+                return [ 302, [ Location => $self->uri_for( "/" ) ], [] ];
+
+            }
+
+            [ 200, [ "Content-Type" => "text/plain" ], [
+                "Something went wrong. User could not be authenticated against CAS\n",
+                "Please report this error:\n",
+                $auth_sso_error->{content}
+            ]];
 
         };
 
