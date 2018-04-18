@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+0.0133  2018-04-18 08:38:42 CEST
   - remove request parameter _callback from ORCID handler. request parameter code should mark callback phase.
   - add error_path to Plack::Auth::SSO. Handle this for CAS and ORCID.
   - add attribute public to ORCID handler
