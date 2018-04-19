@@ -1,4 +1,5 @@
 {{$NEXT}}
+  - error_path equals authorization_path if not set
 
 0.0133  2018-04-18 08:38:42 CEST
   - remove request parameter _callback from ORCID handler. request parameter code should mark callback phase.

@@ -228,6 +228,10 @@ This package requires you to use Plack Sessions.
 
     When authentication fails, this application should redirect you here
 
+    If not set, it has the same value as the authorizaton\_path. In that case make sure that you also
+
+    check for auth\_sso\_error in your authorization route.
+
     The implementor should expect this in the session key "auth\_sso\_error" ( "\_error" is appended to the configured session\_key ):
 
         {
