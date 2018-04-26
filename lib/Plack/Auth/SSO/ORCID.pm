@@ -273,7 +273,15 @@ Plack::Auth::SSO::ORCID - implementation of Plack::Auth::SSO for ORCID
             #    },
             #    uid => "0000-0002-5268-9669",
             #    info => {
-            #        name => "Nicolas Franck"
+            #        name => "Nicolas Franck",
+            #        first_name => "Nicolas",
+            #        last_name => "Franck",
+            #        email => "nicolas.franck@nowhere.com",
+            #        location => "BE",
+            #        description => "my biography",
+            #        other_names => [ "njfranck" ],
+            #        urls => [ { mysite => "https://mysite.com" } ],
+            #        external_identifiers => []
             #    },
             #    extra => {}
             #}
