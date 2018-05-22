@@ -16,3 +16,4 @@ nytprof/
 local/
 examples/catmandu.yml
 cover_db
+cpanfile.snapshot
