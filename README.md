@@ -306,6 +306,25 @@ $hash should be a hash ref, and look like this:
         content => "my-content"
     }
 
+## generate\_csrf\_token()
+
+Generate unique CSRF token. Store this token in your session, and supply it as parameter
+to the redirect uri.
+
+## set\_csrf\_token($session,$token)
+
+Save csrf token to the session
+
+The token is saved in key session\_key + "\_csrf"
+
+## get\_csrf\_token($session)
+
+Retrieve csrf token from the session
+
+## csrf\_token\_valid($session,$token)
+
+Compare supplied token with stored token
+
 # EXAMPLES
 
 See examples/app1:

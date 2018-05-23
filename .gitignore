@@ -4,6 +4,7 @@
 _build
 blib
 Build
+Build.PL
 LICENSE
 Makefile.PL
 META.*
