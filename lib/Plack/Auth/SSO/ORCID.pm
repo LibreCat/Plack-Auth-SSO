@@ -143,6 +143,8 @@ sub to_app {
         #callback phase
         if ( is_string($code) && $self->csrf_token_valid($session,$state) ) {
 
+            $self->cleanup( $session );
+
             my $error             = $params->get("error");
             my $error_description = $params->get("error_description");
 
@@ -224,6 +226,8 @@ sub to_app {
 
         elsif( is_string($code) ) {
 
+            $self->cleanup( $session );
+
             $self->set_auth_sso_error( $session,{
                 package    => __PACKAGE__,
                 package_id => $self->id,
@@ -236,6 +240,8 @@ sub to_app {
 
         #request phase
         else {
+
+            $self->cleanup( $session );
 
             $self->redirect_to_login( $request, $session );
 

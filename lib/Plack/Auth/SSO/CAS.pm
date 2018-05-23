@@ -103,6 +103,8 @@ sub to_app {
             $service_uri->query_form( state => $state );
             my $r = $cas->service_validate($service_uri->as_string(), $ticket);
 
+            $self->cleanup( $session );
+
             if ($r->is_success) {
 
                 my $doc = $r->doc();
@@ -155,6 +157,8 @@ sub to_app {
         }
         elsif( is_string($ticket) ) {
 
+            $self->cleanup( $session );
+
             $self->set_auth_sso_error( $session,{
                 package    => __PACKAGE__,
                 package_id => $self->id,
@@ -164,6 +168,8 @@ sub to_app {
             return $self->redirect_to_error();
 
         }
+
+        $self->cleanup( $session );
 
         $state = $self->generate_csrf_token();
         $self->set_csrf_token(

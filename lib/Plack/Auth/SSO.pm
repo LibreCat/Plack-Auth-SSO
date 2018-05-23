@@ -130,6 +130,15 @@ sub csrf_token_valid {
     defined($value) && defined($stored_token) && $value eq $stored_token;
 }
 
+sub cleanup {
+
+    my ( $self, $session ) = @_;
+
+    $session->remove( $self->session_key() . "_error" );
+    $session->remove( $self->session_key() . "_csrf" );
+
+}
+
 1;
 
 =pod
@@ -468,6 +477,11 @@ Retrieve csrf token from the session
 =head2 csrf_token_valid($session,$token)
 
 Compare supplied token with stored token
+
+=head2 cleanup($session)
+
+removes additional session keys like auth_sso_error and auth_sso_csrf
+before redirecting to the authorization path.
 
 =head1 EXAMPLES
 
