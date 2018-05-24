@@ -13,7 +13,7 @@ use XML::LibXML::XPathContext;
 use XML::LibXML;
 use URI;
 
-our $VERSION = "0.0135";
+our $VERSION = "0.0136";
 
 with "Plack::Auth::SSO";
 

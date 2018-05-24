@@ -6,7 +6,7 @@ use Data::Util qw(:check);
 use Moo::Role;
 use Data::UUID;
 
-our $VERSION = "0.0135";
+our $VERSION = "0.0136";
 
 has session_key => (
     is       => "ro",
