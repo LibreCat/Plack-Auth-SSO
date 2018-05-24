@@ -25,6 +25,7 @@ my %module_build_args = (
   "requires" => {
     "Authen::CAS::Client" => 0,
     "Clone" => 0,
+    "Data::UUID" => 0,
     "Data::Util" => 0,
     "LWP::Protocol::https" => 0,
     "LWP::UserAgent" => 0,
@@ -33,6 +34,7 @@ my %module_build_args = (
     "Plack" => 0,
     "Plack::Middleware::Session" => 0,
     "URI" => 0,
+    "URI::QueryParam" => 0,
     "WWW::ORCID" => "0.0401",
     "perl" => "v5.10.1"
   },
