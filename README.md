@@ -325,6 +325,11 @@ Retrieve csrf token from the session
 
 Compare supplied token with stored token
 
+## cleanup($session)
+
+removes additional session keys like auth\_sso\_error and auth\_sso\_csrf
+before redirecting to the authorization path.
+
 # EXAMPLES
 
 See examples/app1:
