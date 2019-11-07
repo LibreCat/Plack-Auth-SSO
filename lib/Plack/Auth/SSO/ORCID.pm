@@ -109,6 +109,10 @@ sub redirect_to_login {
         redirect_uri => $redirect_uri->as_string()
     );
 
+    $self->log()->info(
+        "redirecting to orcid login $auth_uri"
+    ) if $self->log()->is_info();
+
     [ 302, [ Location => $auth_uri ], [] ];
 
 }
@@ -130,8 +134,19 @@ sub to_app {
 
         my $auth_sso = $self->get_auth_sso($session);
 
+        if( $self->log()->is_debug() ){
+
+            $self->log()->debugf( "incoming query parameters: %s", [$params->flatten] );
+            $self->log()->debugf( "session: %s", $session->dump() );
+            $self->log()->debugf( "session_key for auth_sso: %s ", $self->session_key() );
+
+        }
+
         #already got here before
         if ( is_hash_ref($auth_sso) ) {
+
+            $self->log()->info( "auth_sso already present" )
+                if $self->log()->is_info();
 
             return $self->redirect_to_authorization();
 
@@ -142,6 +157,10 @@ sub to_app {
 
         #callback phase
         if ( is_string($code) && $self->csrf_token_valid($session,$state) ) {
+
+            $self->log()->info(
+                "parameter code and state present: entering callback phase"
+            ) if $self->log()->is_info();
 
             $self->cleanup( $session );
 
@@ -177,6 +196,12 @@ sub to_app {
 
                     my $orcid_res = $json->decode( $body );
 
+                    $self->log()->errorf(
+                        "unable to retrieve access token. Error: %s, Error description: %s",
+                        $orcid_res->{error},
+                        $orcid_res->{error_description}
+                    ) if $self->log()->is_error();
+
                     return $self->redirect_to_login( $request, $session ) if $orcid_res->{error} eq "401";
 
                     $self->set_auth_sso_error( $session, {
@@ -188,6 +213,10 @@ sub to_app {
 
                 }
                 else {
+
+                    $self->log()->errorf(
+                        "unable to retrieve access token. See full body in auth_sso_error."
+                    ) if $self->log()->is_error();
 
                     $self->set_auth_sso_error( $session, {
                         package    => __PACKAGE__,
@@ -226,6 +255,9 @@ sub to_app {
 
         elsif( is_string($code) ) {
 
+            $self->log()->error( "parameter code given, but csrf token not present or invalid" )
+                if $self->log()->is_error();
+
             $self->cleanup( $session );
 
             $self->set_auth_sso_error( $session,{
@@ -240,6 +272,10 @@ sub to_app {
 
         #request phase
         else {
+
+            $self->log()->info(
+                "neither code nor state given: entering request phase"
+            ) if $self->log()->is_info();
 
             $self->cleanup( $session );
 
