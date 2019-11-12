@@ -111,7 +111,7 @@ sub redirect_to_login {
 
     $self->log()->info(
         "redirecting to orcid login $auth_uri"
-    ) if $self->log()->is_info();
+    );
 
     [ 302, [ Location => $auth_uri ], [] ];
 
@@ -145,8 +145,7 @@ sub to_app {
         #already got here before
         if ( is_hash_ref($auth_sso) ) {
 
-            $self->log()->info( "auth_sso already present" )
-                if $self->log()->is_info();
+            $self->log()->debug( "auth_sso already present" );
 
             return $self->redirect_to_authorization();
 
@@ -158,9 +157,9 @@ sub to_app {
         #callback phase
         if ( is_string($code) && $self->csrf_token_valid($session,$state) ) {
 
-            $self->log()->info(
+            $self->log()->debug(
                 "parameter code and state present: entering callback phase"
-            ) if $self->log()->is_info();
+            );
 
             $self->cleanup( $session );
 
@@ -255,8 +254,7 @@ sub to_app {
 
         elsif( is_string($code) ) {
 
-            $self->log()->error( "parameter code given, but csrf token not present or invalid" )
-                if $self->log()->is_error();
+            $self->log()->error( "parameter code given, but csrf token not present or invalid" );
 
             $self->cleanup( $session );
 
@@ -273,9 +271,9 @@ sub to_app {
         #request phase
         else {
 
-            $self->log()->info(
+            $self->log()->debug(
                 "neither code nor state given: entering request phase"
-            ) if $self->log()->is_info();
+            );
 
             $self->cleanup( $session );
 

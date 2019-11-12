@@ -74,8 +74,7 @@ sub redirect_to_authorization {
 
     my $url  = $self->uri_for( $self->authorization_path );
 
-    $self->log()->info( "redirecting to authorization url $url" )
-        if $self->log()->is_info();
+    $self->log()->info( "redirecting to authorization url $url" );
 
     [ 302, [ Location => $url ], [] ];
 
@@ -87,8 +86,7 @@ sub redirect_to_error {
 
     my $url  = $self->uri_for( $self->error_path );
 
-    $self->log()->error( "redirecting to error url $url" )
-        if $self->log()->is_error();
+    $self->log()->error( "redirecting to error url $url" );
 
     [ 302, [ Location => $url ], [] ];
 }
@@ -182,8 +180,7 @@ sub csrf_token_valid {
     my $stored_token = $self->get_csrf_token($session);
     my $valid = defined($value) && defined($stored_token) && $value eq $stored_token;
 
-    $self->log()->debug( "csrf validation " . ($valid ? "ok" : "failed") )
-        if $self->log()->is_debug();
+    $self->log()->debug( "csrf validation " . ($valid ? "ok" : "failed") );
 
     $valid;
 }
@@ -192,12 +189,8 @@ sub cleanup {
 
     my ( $self, $session ) = @_;
 
-    if( $self->log()->is_debug() ){
-
-        $self->log()->debug( "removed session['" . $self->session_key() . "_error']"  );
-        $self->log()->debug( "removed session['" . $self->session_key() . "_csrf']"  );
-
-    }
+    $self->log()->debug( "removed session['" . $self->session_key() . "_error']"  );
+    $self->log()->debug( "removed session['" . $self->session_key() . "_csrf']"  );
 
     $session->remove( $self->session_key() . "_error" );
     $session->remove( $self->session_key() . "_csrf" );

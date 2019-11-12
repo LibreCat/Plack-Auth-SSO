@@ -90,8 +90,7 @@ sub to_app {
         #already got here before
         if (is_hash_ref($auth_sso)) {
 
-            $log->debug( "auth_sso already present" )
-                if $log->is_debug();
+            $log->debug( "auth_sso already present" );
 
             return $self->redirect_to_authorization();
 
@@ -112,8 +111,7 @@ sub to_app {
 
         if ( is_string($ticket) && $self->csrf_token_valid($session,$state) ) {
 
-            $log->debug( "ticket present and csrf token valid: entering callback phase" )
-                if $log->is_debug();
+            $log->debug( "ticket present and csrf token valid: entering callback phase" );
 
             $service_uri->query_form( state => $state );
             my $r = $cas->service_validate($service_uri->as_string(), $ticket);
@@ -122,8 +120,7 @@ sub to_app {
 
             if ($r->is_success) {
 
-                $log->info( "ticket validation successfull" )
-                    if $log->is_info();
+                $log->debug( "ticket validation successfull" );
 
                 my $doc = $r->doc();
 
@@ -148,8 +145,7 @@ sub to_app {
             #e.g. "Can't connect to localhost:8443 (certificate verify failed)"
             elsif( $r->is_error() ) {
 
-                $log->error( "ticket validation failed: unexpected error" )
-                    if $log->is_error();
+                $log->error( "ticket validation failed: unexpected error" );
 
                 $self->set_auth_sso_error( $session, {
                     package    => __PACKAGE__,
@@ -163,8 +159,7 @@ sub to_app {
             #$r->is_failure() -> authenticationFailure: return to authentication url
             else {
 
-                $log->error( "ticket validation failed: authentication failure" )
-                    if $log->is_error();
+                $log->error( "ticket validation failed: authentication failure" );
 
                 my $failure = $self->parse_failure( $r->doc );
 
@@ -183,8 +178,7 @@ sub to_app {
 
             $self->cleanup( $session );
 
-            $log->error( "ticket given, but csrf token not present" )
-                if $log->is_error();
+            $log->error( "ticket given, but csrf token not present" );
 
             $self->set_auth_sso_error( $session,{
                 package    => __PACKAGE__,
@@ -209,8 +203,7 @@ sub to_app {
         #no ticket or ticket validation failed
         my $login_url = $cas->login_url( $service_uri->as_string() )->as_string;
 
-        $log->info( "redirecting to cas login $login_url" )
-            if $log->is_info();
+        $log->info( "redirecting to cas login $login_url" );
 
         [302, [Location => $login_url], []];
 

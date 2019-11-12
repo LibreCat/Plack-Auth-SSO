@@ -100,13 +100,9 @@ sub to_app {
         #already got here before
         if (is_hash_ref($auth_sso)) {
 
-            $self->log()->info( "auth_sso already present" )
-                if $self->log()->is_info();
+            $self->log()->debug( "auth_sso already present" );
 
-            return [
-                302, [Location => $self->uri_for($self->authorization_path)],
-                []
-            ];
+            return $self->redirect_to_authorization();
 
         }
 
@@ -127,7 +123,7 @@ sub to_app {
 
             $self->log()->error(
                 "either shib_session_id, shib_application_id or uid is not present: not authorized"
-            ) if $self->log()->is_error();
+            );
 
             return [
                 401, [ "Content-Type" => "text/plain" ], [ "Unauthorized" ]
@@ -169,19 +165,7 @@ sub to_app {
             }
         );
 
-        my $authorization_url = $self->uri_for($self->authorization_path);
-
-        $self->log()->info(
-            "redirecting to authorization $authorization_url"
-        ) if $self->log()->is_info();
-
-        return [
-            302,
-            [Location => $authorization_url],
-            []
-        ];
-
-
+        $self->redirect_to_authorization();
 
     };
 }
