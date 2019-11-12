@@ -6,10 +6,16 @@ perl:
   - "5.14"
   - "5.12"
   - "5.10"
+before_install:
+  - sudo apt-get -y install make gcc
 install:
-  - cpanm --quiet --installdeps --notest --force --skip-satisfied .
-  - cpanm --quiet --notest --skip-satisfied Devel::Cover
+  - cpanm --local-lib=~/perl5 local::lib
+  - cpanm --local-lib=~/perl5 --quiet --notest --skip-satisfied Devel::Cover
+  - cpanm --local-lib=~/perl5 --quiet --notest --skip-satisfied Module::Build
+  - cpanm --local-lib=~/perl5 --quiet --installdeps --notest --force --skip-satisfied .
 script:
+  - export PERL5LIB=$HOME/perl5/lib/perl5
+  - export PATH=$HOME/perl5/bin:$PATH
   - perl Build.PL && ./Build build && cover -test
 after_success:
   - cpanm --quiet --notest --skip-satisfied Devel::Cover::Report::Coveralls
