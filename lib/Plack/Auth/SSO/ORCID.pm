@@ -462,6 +462,12 @@ Please consult the ORCID to make sure that the parameters "public" and "scope" d
 
 =back
 
+=head1 LOGGING
+
+All subclasses of L<Plack::Auth::SSO> use L<Log::Any>
+to log messages to the category that equals the current
+package name.
+
 =head1 ERRORS
 
 Known ORCID errors are stored in the session key auth_sso_error ( L<Plack::Auth::SSO> ).

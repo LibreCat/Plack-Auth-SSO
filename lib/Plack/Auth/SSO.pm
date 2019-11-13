@@ -472,6 +472,22 @@ base url of the Plack application
 
 =head1 METHODS
 
+=head2 log
+
+logger instance. Object instance of class L<Log::Any::Proxy> that logs messages
+to a category that equals your current class name.
+
+E.g. configure your logging in log4perl.conf:
+
+    log4perl.category.Plack::Auth::SSO::CAS=INFO,STDERR
+    log4perl.appender.STDERR=Log::Log4perl::Appender::Screen
+    log4perl.appender.STDERR.stderr=1
+    log4perl.appender.STDERR.utf8=1
+    log4perl.appender.STDERR.layout=PatternLayout
+    log4perl.appender.STDERR.layout.ConversionPattern=%d %p [%P] - %c[%L] : %m%n
+
+See L<Log::Any> for more information
+
 =head2 to_app
 
 returns a Plack application
@@ -571,5 +587,6 @@ See L<http://dev.perl.org/licenses/> for more information.
 L<Plack::Auth::SSO::CAS>,
 L<Plack::Auth::SSO::ORCID>
 L<Plack::Auth::SSO::Shibboleth>
+L<Log::Any>
 
 =cut

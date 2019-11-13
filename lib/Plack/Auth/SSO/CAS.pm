@@ -291,6 +291,12 @@ base url of the CAS service
 
 =back
 
+=head1 LOGGING
+
+All subclasses of L<Plack::Auth::SSO> use L<Log::Any>
+to log messages to the category that equals the current
+package name.
+
 =head1 ERRORS
 
 Cf. L<https://apereo.github.io/cas/4.2.x/protocol/CAS-Protocol-Specification.html#253-error-codes>

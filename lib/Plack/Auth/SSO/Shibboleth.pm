@@ -447,6 +447,12 @@ This module merely convert these attributes.
 
 =back
 
+=head1 LOGGING
+
+All subclasses of L<Plack::Auth::SSO> use L<Log::Any>
+to log messages to the category that equals the current
+package name.
+
 =head1 AUTHOR
 
 Nicolas Franck, C<< <nicolas.franck at ugent.be> >>
