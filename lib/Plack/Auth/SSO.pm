@@ -5,6 +5,7 @@ use utf8;
 use Data::Util qw(:check);
 use Moo::Role;
 use Data::UUID;
+use Log::Any qw();
 
 our $VERSION = "0.0136";
 
@@ -40,8 +41,20 @@ has uuid => (
     is => "lazy",
     init_arg => undef
 );
+has log => (
+    is => "lazy",
+    init_arg => undef
+);
 
 requires "to_app";
+
+sub _build_log {
+
+    Log::Any->get_logger(
+        category => ref($_[0])
+    );
+
+}
 
 sub _build_uuid {
 
@@ -59,7 +72,11 @@ sub redirect_to_authorization {
 
     my $self = $_[0];
 
-    [ 302, [ Location => $self->uri_for( $self->authorization_path ) ], [] ];
+    my $url  = $self->uri_for( $self->authorization_path );
+
+    $self->log()->info( "redirecting to authorization url $url" );
+
+    [ 302, [ Location => $url ], [] ];
 
 }
 
@@ -67,7 +84,11 @@ sub redirect_to_error {
 
     my $self = $_[0];
 
-    [ 302, [ Location => $self->uri_for( $self->error_path ) ], [] ];
+    my $url  = $self->uri_for( $self->error_path );
+
+    $self->log()->error( "redirecting to error url $url" );
+
+    [ 302, [ Location => $url ], [] ];
 }
 
 sub uri_for {
@@ -87,24 +108,44 @@ sub _check_plack_session {
 sub get_auth_sso {
     my ($self, $session) = @_;
     _check_plack_session($session);
-    $session->get($self->session_key);
+
+    my $value = $session->get($self->session_key);
+
+    $self->log()->debugf( "extracted auth_sso from session['" . $self->session_key() . "']: %s", $value )
+        if $self->log()->is_debug();
+
+    $value;
 }
 
 sub set_auth_sso {
     my ($self, $session, $value) = @_;
     _check_plack_session($session);
+
+    $self->log()->debugf( "session['".$self->session_key."'] set to: %s", $value )
+        if $self->log()->is_debug();
+
     $session->set($self->session_key, $value);
 }
 
 sub get_auth_sso_error {
     my ($self, $session) = @_;
     _check_plack_session($session);
-    $session->get($self->session_key . "_error" );
+
+    my $value = $session->get($self->session_key()."_error");
+
+    $self->log()->debugf( "extracted auth_sso_error from session['" . $self->session_key() . "_error']: %s", $value )
+        if $self->log()->is_debug();
+
+    $value;
 }
 
 sub set_auth_sso_error {
     my ($self, $session, $value) = @_;
     _check_plack_session($session);
+
+    $self->log()->errorf( "session['".$self->session_key."_error'] set to: %s", $value )
+        if $self->log()->is_error();
+
     $session->set($self->session_key . "_error", $value);
 }
 
@@ -115,24 +156,41 @@ sub generate_csrf_token {
 sub set_csrf_token {
     my ($self, $session, $value) = @_;
     _check_plack_session($session);
+
+    $self->log()->debugf( "session['".$self->session_key."_csrf'] set to: %s", $value )
+        if $self->log()->is_debug();
+
     $session->set($self->session_key . "_csrf" , $value);
 }
 
 sub get_csrf_token {
     my ($self, $session) = @_;
     _check_plack_session($session);
-    $session->get($self->session_key . "_csrf" );
+
+    my $value = $session->get($self->session_key . "_csrf");
+
+    $self->log()->debugf( "extracted csrf token from session['" . $self->session_key() . "_csrf']: %s", $value )
+        if $self->log()->is_debug();
+
+    $value;
 }
 
 sub csrf_token_valid {
     my ($self, $session,$value) = @_;
     my $stored_token = $self->get_csrf_token($session);
-    defined($value) && defined($stored_token) && $value eq $stored_token;
+    my $valid = defined($value) && defined($stored_token) && $value eq $stored_token;
+
+    $self->log()->debug( "csrf validation " . ($valid ? "ok" : "failed") );
+
+    $valid;
 }
 
 sub cleanup {
 
     my ( $self, $session ) = @_;
+
+    $self->log()->debug( "removed session['" . $self->session_key() . "_error']"  );
+    $self->log()->debug( "removed session['" . $self->session_key() . "_csrf']"  );
 
     $session->remove( $self->session_key() . "_error" );
     $session->remove( $self->session_key() . "_csrf" );
