@@ -29,6 +29,7 @@ my %module_build_args = (
     "Data::Util" => 0,
     "LWP::Protocol::https" => 0,
     "LWP::UserAgent" => 0,
+    "Log::Any" => 0,
     "Moo" => 0,
     "Moo::Role" => 0,
     "Plack" => 0,

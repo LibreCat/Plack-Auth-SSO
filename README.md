@@ -261,6 +261,22 @@ This package requires you to use Plack Sessions.
 
 # METHODS
 
+## log
+
+logger instance. Object instance of class [Log::Any::Proxy](https://metacpan.org/pod/Log::Any::Proxy) that logs messages
+to a category that equals your current class name.
+
+E.g. configure your logging in log4perl.conf:
+
+    log4perl.category.Plack::Auth::SSO::CAS=INFO,STDERR
+    log4perl.appender.STDERR=Log::Log4perl::Appender::Screen
+    log4perl.appender.STDERR.stderr=1
+    log4perl.appender.STDERR.utf8=1
+    log4perl.appender.STDERR.layout=PatternLayout
+    log4perl.appender.STDERR.layout.ConversionPattern=%d %p [%P] - %c[%L] : %m%n
+
+See [Log::Any](https://metacpan.org/pod/Log::Any) for more information
+
 ## to\_app
 
 returns a Plack application
@@ -360,3 +376,4 @@ See [http://dev.perl.org/licenses/](http://dev.perl.org/licenses/) for more info
 [Plack::Auth::SSO::CAS](https://metacpan.org/pod/Plack::Auth::SSO::CAS),
 [Plack::Auth::SSO::ORCID](https://metacpan.org/pod/Plack::Auth::SSO::ORCID)
 [Plack::Auth::SSO::Shibboleth](https://metacpan.org/pod/Plack::Auth::SSO::Shibboleth)
+[Log::Any](https://metacpan.org/pod/Log::Any)
