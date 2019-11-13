@@ -7,7 +7,7 @@ use Moo::Role;
 use Data::UUID;
 use Log::Any qw();
 
-our $VERSION = "0.0136";
+our $VERSION = "0.0137";
 
 has session_key => (
     is       => "ro",
