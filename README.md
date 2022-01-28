@@ -10,11 +10,9 @@ Plack::Auth::SSO - role for Single Sign On (SSO) authentication
 
 # IMPLEMENTATIONS
 
-\* SSO for Central Authentication System (CAS): [Plack::Auth::SSO::CAS](https://metacpan.org/pod/Plack::Auth::SSO::CAS)
-
-\* SSO for ORCID: [Plack::Auth::SSO::ORCID](https://metacpan.org/pod/Plack::Auth::SSO::ORCID)
-
-\* SSO for Shibboleth: [Plack::Auth::SSO::Shibboleth](https://metacpan.org/pod/Plack::Auth::SSO::Shibboleth)
+- SSO for Central Authentication System (CAS): [Plack::Auth::SSO::CAS](https://metacpan.org/pod/Plack::Auth::SSO::CAS)
+- SSO for ORCID: [Plack::Auth::SSO::ORCID](https://metacpan.org/pod/Plack::Auth::SSO::ORCID)
+- SSO for Shibboleth: [Plack::Auth::SSO::Shibboleth](https://metacpan.org/pod/Plack::Auth::SSO::Shibboleth)
 
 # SYNOPSIS
 
@@ -166,9 +164,9 @@ and log the user in.
 
 This package requires you to use Plack Sessions.
 
-# CONFIG
+# CONSTRUCTOR ARGUMENTS
 
-- session\_key
+- `session_key`
 
     When authentication succeeds, the implementation saves the response
     from the SSO application in this session key, together with extra information.
@@ -194,34 +192,23 @@ This package requires you to use Plack Sessions.
 
     This is usefull for several reasons:
 
-        * the authorization application can distinguish between authenticated and not authenticated users
+    - the authorization application can distinguish between authenticated and not authenticated users
+    - it can pick up the saved response from the session
+    - it can lookup a user in an internal database, matching on the provided "uid" from the external service.
+    - the key "package" tells which package authenticated the user; so the application can do an appropriate lookup based on this information.
+    - the key "package\_id" defaults to the package name, but is configurable. This is usefull when you have several external services of the same type, and your application wants to distinguish between them.
+    - the original response is stored as text, along with the content type.
+    - other attributes stored in the hash reference "info". It is up to the implementing package whether it should only used attributes as pushed during the authentication step (like in CAS), or do an extra lookup.
+    - "extra" should be used to store request information. e.g. "ORCID" gives a "token". e.g. "Shibboleth" supplies the "Shib-Identity-Provider".
 
-        * it can pick up the saved response from the session
-
-        * it can lookup a user in an internal database, matching on the provided "uid" from the external service.
-
-        * the key "package" tells which package authenticated the user; so the application can do an appropriate lookup based on this information.
-
-        * the key "package_id" defaults to the package name, but is configurable. This is usefull when you have several external services of the same type,
-          and your application wants to distinguish between them.
-
-        * the original response is stored as text, along with the content type.
-
-        * other attributes stored in the hash reference "info". It is up to the implementing package whether it should only used attributes as pushed during
-          the authentication step (like in CAS), or do an extra lookup.
-
-        * "extra" should be used to store request information.
-            e.g. "ORCID" gives a "token".
-            e.g. "Shibboleth" supplies the "Shib-Identity-Provider".
-
-- authorization\_path
+- `authorization_path`
 
     (internal) path of the authorization route. This path will be prepended by "uri\_base" to
     create the full url.
 
     When authentication succeeds, this application should redirect you here
 
-- error\_path
+- `error_path`
 
     (internal) path of the error route. This path will be prepended by "uri\_base" to
     create the full url.
@@ -243,11 +230,7 @@ This package requires you to use Plack Sessions.
 
     Error types should be documented by the implementor.
 
-- uri\_for( path )
-
-    method that prepends your path with "uri\_base".
-
-- id
+- `id`
 
     identifier of the authentication module. Defaults to the package name.
     This is handy when using multiple SSO instances, and you need to known
@@ -255,96 +238,113 @@ This package requires you to use Plack Sessions.
 
     This is stored in "auth\_sso" as "package\_id".
 
-- uri\_base
+- `uri_base`
 
     base url of the Plack application
 
+    Required
+
 # METHODS
 
-## log
+- `uri_for( path )`
 
-logger instance. Object instance of class [Log::Any::Proxy](https://metacpan.org/pod/Log::Any::Proxy) that logs messages
-to a category that equals your current class name.
+    method that prepends your path with "uri\_base".
 
-E.g. configure your logging in log4perl.conf:
+- `log`
 
-    log4perl.category.Plack::Auth::SSO::CAS=INFO,STDERR
-    log4perl.appender.STDERR=Log::Log4perl::Appender::Screen
-    log4perl.appender.STDERR.stderr=1
-    log4perl.appender.STDERR.utf8=1
-    log4perl.appender.STDERR.layout=PatternLayout
-    log4perl.appender.STDERR.layout.ConversionPattern=%d %p [%P] - %c[%L] : %m%n
+    logger instance. Object instance of class [Log::Any::Proxy](https://metacpan.org/pod/Log::Any::Proxy) that logs messages
+    to a category that equals your current class name.
 
-See [Log::Any](https://metacpan.org/pod/Log::Any) for more information
+    E.g. configure your logging in log4perl.conf:
 
-## to\_app
+        log4perl.category.Plack::Auth::SSO::CAS=INFO,STDERR
+        log4perl.appender.STDERR=Log::Log4perl::Appender::Screen
+        log4perl.appender.STDERR.stderr=1
+        log4perl.appender.STDERR.utf8=1
+        log4perl.appender.STDERR.layout=PatternLayout
+        log4perl.appender.STDERR.layout.ConversionPattern=%d %p [%P] - %c[%L] : %m%n
 
-returns a Plack application
+    See [Log::Any](https://metacpan.org/pod/Log::Any) for more information
 
-This must be implemented by subclasses
+- `to_app`
 
-## get\_auth\_sso($plack\_session)
+    returns a Plack application
 
-get saved SSO response from your session
+    This must be implemented by subclasses
 
-## set\_auth\_sso($plack\_session,$hash)
+- `get_auth_sso($plack_session) : $hash`
 
-save SSO response to your session
+    get saved SSO response from your session
 
-$hash should be a hash ref, and look like this:
+- `set_auth_sso($plack_session, $hash)`
 
-    {
-        package => __PACKAGE__,
-        package_id => __PACKAGE__ ,
-        response => {
-            content => "Long response from external SSO application like CAS",
-            content_type => "<mime-type>",
-        },
-        uid => "<uid>",
-        info => {},
-        extra => {}
-    }
+    save SSO response to your session
 
-## get\_auth\_sso\_error($plack\_session)
+    $hash should be a hash ref, and look like this:
 
-get saved SSO error response from your session
+        {
+            package => __PACKAGE__,
+            package_id => __PACKAGE__ ,
+            response => {
+                content => "Long response from external SSO application like CAS",
+                content_type => "<mime-type>",
+            },
+            uid => "<uid>",
+            info => {},
+            extra => {}
+        }
 
-## set\_auth\_sso\_error($plack\_session,$hash)
+- `get_auth_sso_error($plack_session) : $hash`
 
-save SSO error response to your session
+    get saved SSO error response from your session
 
-$hash should be a hash ref, and look like this:
+- `set_auth_sso_error($plack_session, $hash)`
 
-    {
-        package => __PACKAGE__,
-        package_id => __PACKAGE__ ,
-        type => "my-type",
-        content => "my-content"
-    }
+    save SSO error response to your session
 
-## generate\_csrf\_token()
+    $hash should be a hash ref, and look like this:
 
-Generate unique CSRF token. Store this token in your session, and supply it as parameter
-to the redirect uri.
+        {
+            package => __PACKAGE__,
+            package_id => __PACKAGE__ ,
+            type => "my-type",
+            content => "my-content"
+        }
 
-## set\_csrf\_token($session,$token)
+- `generate_csrf_token()`
 
-Save csrf token to the session
+    Generate unique CSRF token. Store this token in your session, and supply it as parameter
+    to the redirect uri.
 
-The token is saved in key session\_key + "\_csrf"
+- `set_csrf_token($session, $token)`
 
-## get\_csrf\_token($session)
+    Save csrf token to the session
 
-Retrieve csrf token from the session
+    The token is saved in key session\_key + "\_csrf"
 
-## csrf\_token\_valid($session,$token)
+- `get_csrf_token($session): $string`
 
-Compare supplied token with stored token
+    Retrieve csrf token from the session
 
-## cleanup($session)
+- `csrf_token_valid($session,$token) : $boolean`
 
-removes additional session keys like auth\_sso\_error and auth\_sso\_csrf
-before redirecting to the authorization path.
+    Compare supplied token with stored token
+
+- `cleanup($session)`
+
+    removes additional session keys like `auth_sso_error` and `auth_sso_csrf`
+    before redirecting to the authorization path.
+
+    implementations should supply an override when they
+    want to remove additional keys:
+
+        around cleanup => sub {
+
+            my ($orig, $self, $session) = @_;
+            $self->$orig($session);
+            $session->remove("auth_sso_my_implementation_temporary_attr");
+
+        };
 
 # EXAMPLES
 
@@ -373,7 +373,7 @@ See [http://dev.perl.org/licenses/](http://dev.perl.org/licenses/) for more info
 
 # SEE ALSO
 
-[Plack::Auth::SSO::CAS](https://metacpan.org/pod/Plack::Auth::SSO::CAS),
+[Plack::Auth::SSO::CAS](https://metacpan.org/pod/Plack::Auth::SSO::CAS)
 [Plack::Auth::SSO::ORCID](https://metacpan.org/pod/Plack::Auth::SSO::ORCID)
 [Plack::Auth::SSO::Shibboleth](https://metacpan.org/pod/Plack::Auth::SSO::Shibboleth)
 [Log::Any](https://metacpan.org/pod/Log::Any)

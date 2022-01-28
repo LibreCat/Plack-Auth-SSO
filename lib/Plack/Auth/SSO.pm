@@ -217,11 +217,15 @@ Plack::Auth::SSO - role for Single Sign On (SSO) authentication
 
 =head1 IMPLEMENTATIONS
 
-* SSO for Central Authentication System (CAS): L<Plack::Auth::SSO::CAS>
+=over 4
 
-* SSO for ORCID: L<Plack::Auth::SSO::ORCID>
+=item SSO for Central Authentication System (CAS): L<Plack::Auth::SSO::CAS>
 
-* SSO for Shibboleth: L<Plack::Auth::SSO::Shibboleth>
+=item SSO for ORCID: L<Plack::Auth::SSO::ORCID>
+
+=item SSO for Shibboleth: L<Plack::Auth::SSO::Shibboleth>
+
+=back
 
 =head1 SYNOPSIS
 
@@ -373,11 +377,11 @@ and log the user in.
 
 This package requires you to use Plack Sessions.
 
-=head1 CONFIG
+=head1 CONSTRUCTOR ARGUMENTS
 
 =over 4
 
-=item session_key
+=item C<< session_key >>
 
 When authentication succeeds, the implementation saves the response
 from the SSO application in this session key, together with extra information.
@@ -403,34 +407,34 @@ The response should look like this:
 
 This is usefull for several reasons:
 
-    * the authorization application can distinguish between authenticated and not authenticated users
+=over 6
 
-    * it can pick up the saved response from the session
+=item the authorization application can distinguish between authenticated and not authenticated users
 
-    * it can lookup a user in an internal database, matching on the provided "uid" from the external service.
+=item it can pick up the saved response from the session
 
-    * the key "package" tells which package authenticated the user; so the application can do an appropriate lookup based on this information.
+=item it can lookup a user in an internal database, matching on the provided "uid" from the external service.
 
-    * the key "package_id" defaults to the package name, but is configurable. This is usefull when you have several external services of the same type,
-      and your application wants to distinguish between them.
+=item the key "package" tells which package authenticated the user; so the application can do an appropriate lookup based on this information.
 
-    * the original response is stored as text, along with the content type.
+=item the key "package_id" defaults to the package name, but is configurable. This is usefull when you have several external services of the same type, and your application wants to distinguish between them.
 
-    * other attributes stored in the hash reference "info". It is up to the implementing package whether it should only used attributes as pushed during
-      the authentication step (like in CAS), or do an extra lookup.
+=item the original response is stored as text, along with the content type.
 
-    * "extra" should be used to store request information.
-        e.g. "ORCID" gives a "token".
-        e.g. "Shibboleth" supplies the "Shib-Identity-Provider".
+=item other attributes stored in the hash reference "info". It is up to the implementing package whether it should only used attributes as pushed during the authentication step (like in CAS), or do an extra lookup.
 
-=item authorization_path
+=item "extra" should be used to store request information. e.g. "ORCID" gives a "token". e.g. "Shibboleth" supplies the "Shib-Identity-Provider".
+
+=back
+
+=item C<< authorization_path >>
 
 (internal) path of the authorization route. This path will be prepended by "uri_base" to
 create the full url.
 
 When authentication succeeds, this application should redirect you here
 
-=item error_path
+=item C<< error_path >>
 
 (internal) path of the error route. This path will be prepended by "uri_base" to
 create the full url.
@@ -452,11 +456,8 @@ The implementor should expect this in the session key "auth_sso_error" ( "_error
 
 Error types should be documented by the implementor.
 
-=item uri_for( path )
 
-method that prepends your path with "uri_base".
-
-=item id
+=item C<< id >>
 
 identifier of the authentication module. Defaults to the package name.
 This is handy when using multiple SSO instances, and you need to known
@@ -464,15 +465,23 @@ exactly which package authenticated the user.
 
 This is stored in "auth_sso" as "package_id".
 
-=item uri_base
+=item C<< uri_base >>
 
 base url of the Plack application
+
+Required
 
 =back
 
 =head1 METHODS
 
-=head2 log
+=over 4
+
+=item C<< uri_for( path ) >>
+
+method that prepends your path with "uri_base".
+
+=item C<< log >>
 
 logger instance. Object instance of class L<Log::Any::Proxy> that logs messages
 to a category that equals your current class name.
@@ -488,17 +497,17 @@ E.g. configure your logging in log4perl.conf:
 
 See L<Log::Any> for more information
 
-=head2 to_app
+=item C<< to_app >>
 
 returns a Plack application
 
 This must be implemented by subclasses
 
-=head2 get_auth_sso($plack_session)
+=item C<< get_auth_sso($plack_session) : $hash >>
 
 get saved SSO response from your session
 
-=head2 set_auth_sso($plack_session,$hash)
+=item C<< set_auth_sso($plack_session, $hash) >>
 
 save SSO response to your session
 
@@ -516,11 +525,11 @@ $hash should be a hash ref, and look like this:
         extra => {}
     }
 
-=head2 get_auth_sso_error($plack_session)
+=item C<< get_auth_sso_error($plack_session) : $hash >>
 
 get saved SSO error response from your session
 
-=head2 set_auth_sso_error($plack_session,$hash)
+=item C<< set_auth_sso_error($plack_session, $hash) >>
 
 save SSO error response to your session
 
@@ -533,29 +542,42 @@ $hash should be a hash ref, and look like this:
         content => "my-content"
     }
 
-=head2 generate_csrf_token()
+=item C<< generate_csrf_token() >>
 
 Generate unique CSRF token. Store this token in your session, and supply it as parameter
 to the redirect uri.
 
-=head2 set_csrf_token($session,$token)
+=item C<< set_csrf_token($session, $token) >>
 
 Save csrf token to the session
 
 The token is saved in key session_key + "_csrf"
 
-=head2 get_csrf_token($session)
+=item C<< get_csrf_token($session): $string >>
 
 Retrieve csrf token from the session
 
-=head2 csrf_token_valid($session,$token)
+=item C<< csrf_token_valid($session,$token) : $boolean >>
 
 Compare supplied token with stored token
 
-=head2 cleanup($session)
+=item C<< cleanup($session) >>
 
-removes additional session keys like auth_sso_error and auth_sso_csrf
+removes additional session keys like C<< auth_sso_error >> and C<< auth_sso_csrf >>
 before redirecting to the authorization path.
+
+implementations should supply an override when they
+want to remove additional keys:
+
+    around cleanup => sub {
+
+        my ($orig, $self, $session) = @_;
+        $self->$orig($session);
+        $session->remove("auth_sso_my_implementation_temporary_attr");
+
+    };
+
+=back
 
 =head1 EXAMPLES
 
@@ -584,7 +606,7 @@ See L<http://dev.perl.org/licenses/> for more information.
 
 =head1 SEE ALSO
 
-L<Plack::Auth::SSO::CAS>,
+L<Plack::Auth::SSO::CAS>
 L<Plack::Auth::SSO::ORCID>
 L<Plack::Auth::SSO::Shibboleth>
 L<Log::Any>
